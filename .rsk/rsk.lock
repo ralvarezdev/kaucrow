@@ -1,0 +1,19 @@
+version = 1
+
+[[skills]]
+  name = "frontend-design"
+  version = ""
+  source = "official"
+  path = "/home/ralvarezdev/.config/rsk/cache/anthropic/skills/skills/frontend-design"
+
+[[skills]]
+  name = "react-architect"
+  version = "1.0.1"
+  source = "registry"
+  path = "/home/ralvarezdev/.config/rsk/cache/registry/react-architect/1.0.1"
+
+[[skills]]
+  name = "repo-tooling-architect"
+  version = "1.4.0"
+  source = "registry"
+  path = "/home/ralvarezdev/.config/rsk/cache/registry/repo-tooling-architect/1.4.0"

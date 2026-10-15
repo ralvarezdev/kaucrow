@@ -1,0 +1,12 @@
+{
+  "mcp": {
+    "rsk": {
+      "command": [
+        "rsk",
+        "mcp"
+      ],
+      "enabled": true,
+      "type": "local"
+    }
+  }
+}

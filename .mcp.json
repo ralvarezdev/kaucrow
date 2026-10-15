@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "rsk": {
+      "args": [
+        "mcp"
+      ],
+      "command": "rsk"
+    }
+  }
+}
