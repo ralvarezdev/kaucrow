@@ -1,0 +1,54 @@
+.app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  transition: background var(--duration-base);
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+}
+
+/* HUD sits over the canvas; only its controls take pointer events. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.overlay button,
+.overlay nav {
+  pointer-events: auto;
+}
+
+.add {
+  position: absolute;
+  top: calc(var(--space-7) + 4px);
+  right: var(--space-8);
+}
+
+.hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 28px;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--color-text-muted);
+}
