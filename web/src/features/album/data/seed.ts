@@ -27,5 +27,6 @@ export const SEED_PHOTOS: Photo[] = TONES.map((tone, i) => ({
   tone,
   name: `[FRIEND ${LETTERS[i] ?? i}]`,
   note: '[A short note from the friend who added this photo]',
+  group: 'friends',
   mine: false,
 }))

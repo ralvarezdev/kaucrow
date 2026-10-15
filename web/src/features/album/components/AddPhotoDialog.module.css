@@ -25,3 +25,45 @@
   justify-content: flex-end;
   gap: var(--space-3);
 }
+
+.group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.group legend {
+  margin-bottom: var(--space-3);
+  padding: 0;
+}
+
+.options {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.option {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.option[data-selected="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.option:focus-within {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}

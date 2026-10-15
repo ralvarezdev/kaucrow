@@ -1,22 +1,27 @@
 import type { FormEvent } from 'react'
 import { useRef, useState } from 'react'
 import { Button, Dialog, Field } from '@/components/ui'
+import { SCENES } from '@/features/scenes/registry'
 import { useAlbum } from '../store'
+import { PHOTO_GROUPS, type PhotoGroup } from '../types'
 import styles from './AddPhotoDialog.module.css'
 
 export function AddPhotoDialog() {
   const open = useAlbum((s) => s.adding)
   const closeAdd = useAlbum((s) => s.closeAdd)
   const addPhoto = useAlbum((s) => s.addPhoto)
+  const asksGroup = useAlbum((s) => SCENES[s.scene].hasGroups)
 
   const formRef = useRef<HTMLFormElement>(null)
   const [fileName, setFileName] = useState<string | null>(null)
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined)
+  const [group, setGroup] = useState<PhotoGroup>('friends')
 
   const reset = () => {
     formRef.current?.reset()
     setFileName(null)
     setImageUrl(undefined)
+    setGroup('friends')
   }
 
   const close = () => {
@@ -30,6 +35,7 @@ export function AddPhotoDialog() {
     addPhoto({
       name: String(data.get('name') ?? ''),
       note: String(data.get('note') ?? ''),
+      group,
       ...(imageUrl ? { imageUrl } : {}),
     })
     reset()
@@ -51,6 +57,25 @@ export function AddPhotoDialog() {
             }}
           />
         </label>
+        {asksGroup && (
+          <fieldset className={styles.group}>
+            <legend>Which group are you in?</legend>
+            <div className={styles.options}>
+              {PHOTO_GROUPS.map((g) => (
+                <label key={g} className={styles.option} data-selected={group === g}>
+                  <input
+                    type="radio"
+                    name="group"
+                    value={g}
+                    checked={group === g}
+                    onChange={() => setGroup(g)}
+                  />
+                  {g === 'friends' ? 'Friends' : 'Family'}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
         <Field name="name" label="Your name" autoComplete="name" />
         <Field name="note" label="A short note" multiline />
         <div className={styles.actions}>

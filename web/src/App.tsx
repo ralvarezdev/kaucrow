@@ -3,6 +3,7 @@ import { Button } from '@/components/ui'
 import {
   AddPhotoDialog,
   AlbumHeader,
+  GroupFilter,
   PhotoList,
   PhotoNav,
   SceneSwitcher,
@@ -30,13 +31,12 @@ export function App() {
           Add a photo
         </Button>
         {scene.hasTour && <PhotoNav />}
-        <p className={styles.hint}>
-          Move the mouse to look around · Click a photo to bring it closer
-        </p>
+        {scene.hasGroups && <GroupFilter />}
+        <p className={styles.hint}>{scene.hint}</p>
         <SceneSwitcher />
       </div>
 
-      <PhotoList count={scene.slotCount} />
+      {scene.slotCount > 0 && <PhotoList count={scene.slotCount} />}
       <AddPhotoDialog />
     </div>
   )

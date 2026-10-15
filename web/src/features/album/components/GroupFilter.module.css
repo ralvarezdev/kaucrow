@@ -1,0 +1,24 @@
+.filter {
+  position: absolute;
+  top: calc(var(--space-7) + 4px);
+  left: 50%;
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+@media (max-width: 900px) {
+  .filter {
+    top: 132px;
+  }
+}
+
+@media (max-width: 640px) {
+  .filter {
+    top: 108px;
+  }
+}

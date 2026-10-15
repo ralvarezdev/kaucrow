@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { SceneId } from '@/features/scenes/ids'
 import { NEW_PHOTO_TONE } from './config'
 import { SEED_PHOTOS } from './data/seed'
-import type { Photo, PhotoDraft } from './types'
+import type { GroupFilter, Photo, PhotoDraft } from './types'
 
 /**
  * `slots[i]` is the index into `photos` currently hung at layout slot `i`.
@@ -15,9 +15,11 @@ type AlbumState = {
   tour: number
   scene: SceneId
   adding: boolean
+  filter: GroupFilter
   pick: (slot: number) => void
   step: (delta: 1 | -1) => void
   setScene: (scene: SceneId) => void
+  setFilter: (filter: GroupFilter) => void
   openAdd: () => void
   closeAdd: () => void
   addPhoto: (draft: PhotoDraft) => void
@@ -32,6 +34,7 @@ export const useAlbum = create<AlbumState>((set, get) => ({
   tour: 0,
   scene: 'night-sky',
   adding: false,
+  filter: 'all',
 
   pick: (slot) =>
     set(({ slots, focus }) => {
@@ -49,6 +52,7 @@ export const useAlbum = create<AlbumState>((set, get) => ({
   },
 
   setScene: (scene) => set({ scene }),
+  setFilter: (filter) => set({ filter }),
   openAdd: () => set({ adding: true }),
   closeAdd: () => set({ adding: false }),
 
@@ -58,6 +62,7 @@ export const useAlbum = create<AlbumState>((set, get) => ({
         tone: NEW_PHOTO_TONE,
         name: draft.name.trim() || '[YOUR NAME]',
         note: draft.note.trim() || '[Your note]',
+        group: draft.group ?? 'friends',
         mine: true,
         ...(draft.imageUrl ? { imageUrl: draft.imageUrl } : {}),
       }

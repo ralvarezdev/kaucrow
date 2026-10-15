@@ -64,3 +64,7 @@
   --header-size: 64px;
   --header-align: start;
 }
+
+[data-scene="growing"] {
+  --header-size: 64px;
+}

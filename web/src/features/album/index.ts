@@ -1,5 +1,6 @@
 export { AddPhotoDialog } from './components/AddPhotoDialog'
 export { AlbumHeader } from './components/AlbumHeader'
+export { GroupFilter } from './components/GroupFilter'
 export { PhotoList } from './components/PhotoList'
 export { PhotoNav } from './components/PhotoNav'
 export { SceneSwitcher } from './components/SceneSwitcher'
