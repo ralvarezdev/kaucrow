@@ -1,0 +1,45 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--control-height);
+  padding: 0 var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font: 500 15px / 1 var(--font-body);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast),
+    color var(--duration-fast),
+    border-color var(--duration-fast);
+}
+
+.solid {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.outline {
+  border-color: var(--color-accent);
+  background: transparent;
+  color: var(--color-accent);
+}
+
+.ghost {
+  border-color: var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+}
+
+.translucent {
+  border-color: var(--color-border);
+  background: var(--color-overlay);
+  color: var(--color-text);
+}
+
+.icon {
+  width: var(--control-height);
+  padding: 0;
+}

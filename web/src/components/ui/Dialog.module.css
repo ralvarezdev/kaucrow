@@ -1,0 +1,22 @@
+.dialog {
+  width: min(480px, calc(100vw - 32px));
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.dialog::backdrop {
+  background: var(--color-scrim);
+}
+
+.dialog[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  margin: 0;
+  font: var(--font-display-weight) 34px / 1.1 var(--font-display);
+}
