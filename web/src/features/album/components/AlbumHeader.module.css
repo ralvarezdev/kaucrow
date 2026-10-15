@@ -1,8 +1,8 @@
 .header {
   position: absolute;
   top: var(--space-7);
-  left: var(--space-8);
-  right: var(--space-8);
+  left: var(--gutter);
+  right: var(--gutter);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -22,7 +22,7 @@
 .name {
   margin: 0;
   color: var(--color-text);
-  font: var(--font-display-weight) var(--header-size) / 1 var(--font-display);
+  font: var(--font-display-weight) clamp(40px, 7vw, var(--header-size)) / 1 var(--font-display);
 }
 
 .years {
@@ -30,4 +30,20 @@
   color: var(--color-text-muted);
   font-size: 15px;
   letter-spacing: 0.14em;
+}
+
+@media (max-width: 640px) {
+  .header {
+    top: var(--space-5);
+    /* leave room for the add button */
+    right: 148px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+  }
+
+  .years {
+    font-size: 13px;
+  }
 }

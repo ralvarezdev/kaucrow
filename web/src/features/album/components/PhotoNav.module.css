@@ -13,13 +13,19 @@
   left: calc(50% + 212px);
 }
 
-@media (max-width: 720px) {
+/* On narrow screens the frame shrinks with the camera; dock the buttons instead. */
+@media (max-width: 900px) {
+  .prev,
+  .next {
+    top: auto;
+    bottom: 104px;
+  }
+
   .prev {
-    left: var(--space-3);
+    left: calc(50% - 52px);
   }
 
   .next {
-    left: auto;
-    right: var(--space-3);
+    left: calc(50% + 8px);
   }
 }

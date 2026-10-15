@@ -17,6 +17,7 @@
   --radius-pill: 999px;
 
   --control-height: 44px;
+  --gutter: clamp(16px, 4.4vw, 56px);
   --duration-fast: 0.2s;
   --duration-base: 0.35s;
 

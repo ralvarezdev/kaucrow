@@ -23,3 +23,12 @@ export function rectCentre(rect: PxRect, area: Area): [x: number, y: number] {
 /** Vertical FOV that makes the z=0 plane exactly STAGE.height px tall at `cameraZ`. */
 export const fovFor = (cameraZ: number) =>
   (2 * Math.atan(toWorld(STAGE.height) / 2 / cameraZ) * 180) / Math.PI
+
+export const STAGE_ASPECT = STAGE.width / STAGE.height
+
+/**
+ * Camera distance that keeps the whole 1280×800 stage visible: on viewports
+ * narrower than the stage the camera backs off, on wider ones it stays put.
+ */
+export const fitDistance = (cameraZ: number, aspect: number) =>
+  cameraZ * Math.max(1, STAGE_ASPECT / aspect)
