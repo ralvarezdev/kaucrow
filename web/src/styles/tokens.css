@@ -1,0 +1,25 @@
+/* Scene-independent design tokens. Scene themes live in themes.css. */
+:root {
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: "Instrument Sans", system-ui, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 56px;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-pill: 999px;
+
+  --control-height: 44px;
+  --duration-fast: 0.2s;
+  --duration-base: 0.35s;
+
+  --crow-cream: #fff1e8;
+  --crow-ink: #000;
+}

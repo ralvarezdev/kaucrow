@@ -1,0 +1,66 @@
+/*
+ * One theme per scene, selected with [data-scene] on the app root.
+ * Components only ever read the semantic --color-* / --font-* vars.
+ */
+[data-scene="night-sky"] {
+  --color-bg: #0b0d1c;
+  --color-surface: #171a36;
+  --color-text: #f6efe2;
+  --color-text-muted: #b9b7cc;
+  --color-accent: #f2d9a6;
+  --color-on-accent: #1a1530;
+  --color-border: rgb(246 239 226 / 0.45);
+  --color-overlay: rgb(14 16 32 / 0.6);
+  --color-scrim: rgb(8 9 20 / 0.78);
+  --color-field-bg: #0e1020;
+  --color-field-text: #f6efe2;
+  --color-focus: #f2d9a6;
+
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-body: "Instrument Sans", system-ui, sans-serif;
+  --font-display-weight: 400;
+  --header-size: 80px;
+  --header-align: start;
+}
+
+[data-scene="gallery"] {
+  --color-bg: #120c08;
+  --color-surface: #e6d8be;
+  --color-text: #f3e3c3;
+  --color-text-muted: #c9b793;
+  --color-accent: #f3e3c3;
+  --color-on-accent: #2b1d15;
+  --color-border: rgb(243 227 195 / 0.5);
+  --color-overlay: rgb(18 12 8 / 0.6);
+  --color-scrim: rgb(18 12 8 / 0.7);
+  --color-field-bg: #fffbf1;
+  --color-field-text: #2b1d15;
+  --color-focus: #f3e3c3;
+
+  --font-display: "Spectral", Georgia, serif;
+  --font-body: "Work Sans", system-ui, sans-serif;
+  --font-display-weight: 300;
+  --header-size: 72px;
+  --header-align: center;
+}
+
+[data-scene="table"] {
+  --color-bg: #cdba9a;
+  --color-surface: #fbf8f1;
+  --color-text: #2e241b;
+  --color-text-muted: #4a3b2c;
+  --color-accent: #2e241b;
+  --color-on-accent: #fbf8f1;
+  --color-border: rgb(46 36 27 / 0.45);
+  --color-overlay: rgb(251 248 241 / 0.7);
+  --color-scrim: rgb(46 36 27 / 0.55);
+  --color-field-bg: #fffdf5;
+  --color-field-text: #2e241b;
+  --color-focus: #2e241b;
+
+  --font-display: "Newsreader", Georgia, serif;
+  --font-body: "Karla", system-ui, sans-serif;
+  --font-display-weight: 300;
+  --header-size: 64px;
+  --header-align: start;
+}
