@@ -1,0 +1,25 @@
+/* Focus frame is 400px wide and centred; sit 12px outside each edge. */
+.prev,
+.next {
+  position: absolute;
+  top: calc(50% - 22px);
+}
+
+.prev {
+  left: calc(50% - 256px);
+}
+
+.next {
+  left: calc(50% + 212px);
+}
+
+@media (max-width: 720px) {
+  .prev {
+    left: var(--space-3);
+  }
+
+  .next {
+    left: auto;
+    right: var(--space-3);
+  }
+}
