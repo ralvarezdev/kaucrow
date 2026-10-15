@@ -17,10 +17,10 @@ const ACCENT = '#f2d9a6'
  */
 const LAYERS: Record<
   SkyDepth,
-  { z: number; opacity: number; border: number; borderColor: string }
+  { z: number; opacity: number; blur: number; border: number; borderColor: string }
 > = {
-  far: { z: -20, opacity: 0.5, border: 3, borderColor: '#e9e4d8' },
-  mid: { z: -6, opacity: 0.85, border: 4, borderColor: '#f1ece0' },
+  far: { z: -20, opacity: 0.5, blur: 1, border: 3, borderColor: '#e9e4d8' },
+  mid: { z: -6, opacity: 0.85, blur: 0, border: 4, borderColor: '#f1ece0' },
 }
 const scaleAt = (z: number) => (CAMERA_Z - z) / CAMERA_Z
 
@@ -85,6 +85,7 @@ function SkyContent() {
                   borderColor={layer.borderColor}
                   paper={photo.tone}
                   opacity={layer.opacity}
+                  blur={layer.blur}
                   onSelect={() => pick(i)}
                 />
               )
