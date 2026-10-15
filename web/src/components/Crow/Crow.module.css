@@ -1,0 +1,16 @@
+.crow {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.cream {
+  fill: var(--crow-cream);
+}
+
+.ink {
+  fill: var(--crow-ink);
+}
