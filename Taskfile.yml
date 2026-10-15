@@ -1,0 +1,92 @@
+version: '3'
+
+tasks:
+  default:
+    desc: List all tasks
+    cmds:
+      - task --list
+
+  frontend:install:
+    desc: Install web dependencies
+    dir: web
+    sources:
+      - package.json
+      - pnpm-lock.yaml
+    cmds:
+      - pnpm install --frozen-lockfile
+
+  frontend:dev:
+    desc: Start the Vite dev server
+    dir: web
+    deps: [frontend:install]
+    cmds:
+      - pnpm dev
+
+  frontend:build:
+    desc: Typecheck and build the web app
+    dir: web
+    deps: [frontend:install]
+    cmds:
+      - pnpm build
+
+  frontend:preview:
+    desc: Serve the production build locally
+    dir: web
+    deps: [frontend:build]
+    cmds:
+      - pnpm preview
+
+  test:frontend:
+    desc: Run web unit and component tests
+    dir: web
+    deps: [frontend:install]
+    cmds:
+      - pnpm test
+
+  test:frontend:watch:
+    desc: Run web tests in watch mode
+    dir: web
+    deps: [frontend:install]
+    cmds:
+      - pnpm test:watch
+
+  coverage:frontend:
+    desc: Run web tests with a coverage report
+    dir: web
+    deps: [frontend:install]
+    cmds:
+      - pnpm coverage
+
+  lint:frontend:
+    desc: Lint and check formatting with Biome
+    dir: web
+    deps: [frontend:install]
+    cmds:
+      - pnpm lint
+
+  fmt:fix:
+    desc: Apply Biome formatting and safe fixes
+    dir: web
+    deps: [frontend:install]
+    cmds:
+      - pnpm exec biome check --write .
+
+  typecheck:frontend:
+    desc: Typecheck the web app
+    dir: web
+    deps: [frontend:install]
+    cmds:
+      - pnpm typecheck
+
+  check:
+    desc: Pre-commit gate (lint, typecheck, tests)
+    cmds:
+      - task: lint:frontend
+      - task: typecheck:frontend
+      - task: test:frontend
+
+  ci:
+    desc: CI gate (check plus production build)
+    cmds:
+      - task: check
+      - task: frontend:build
