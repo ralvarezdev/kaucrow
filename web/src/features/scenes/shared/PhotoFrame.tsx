@@ -219,11 +219,14 @@ function ToneFace({ tone, w, h, opacity }: FaceProps & { tone: string }) {
   )
 }
 
+/** The whole photo at its own proportions, centred; the frame's paper shows in any spare space. */
 function ImageFace({ url, w, h, opacity }: FaceProps & { url: string }) {
   const texture = useTexture(url)
+  const { width, height } = texture.image as { width: number; height: number }
+  const scale = Math.min(w / width, h / height)
   return (
     <mesh>
-      <planeGeometry args={[toWorld(w), toWorld(h)]} />
+      <planeGeometry args={[toWorld(width * scale), toWorld(height * scale)]} />
       <meshBasicMaterial map={texture} transparent opacity={opacity} toneMapped={false} />
     </mesh>
   )
