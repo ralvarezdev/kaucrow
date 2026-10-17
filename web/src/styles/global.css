@@ -18,6 +18,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Slim scrollbars in the scene's own colour, instead of the browser's grey bars. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border, rgb(246 239 226 / 0.45)) transparent;
+}
+
+/* Browsers without scrollbar-color (Safari before 18.2) get the same look the old way. */
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--color-border, rgb(246 239 226 / 0.45));
+  }
+}
+
 button,
 input,
 textarea {

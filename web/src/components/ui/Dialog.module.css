@@ -1,4 +1,6 @@
 .dialog {
+  /* Dialogs can sit inside the click-through overlay; without this their links and fields ignore the mouse. */
+  pointer-events: auto;
   width: min(480px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);
   overflow-y: auto;
