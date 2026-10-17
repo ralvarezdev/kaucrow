@@ -5,9 +5,9 @@
   pointer-events: auto;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 640px), (max-height: 520px) {
   .hud {
-    top: calc(var(--space-5) + var(--hud-row, 0) * 44px);
+    top: calc(var(--space-3) + var(--hud-row, 0) * 44px);
     height: 36px;
     padding: 0 var(--space-4);
     font-size: var(--text-sm);

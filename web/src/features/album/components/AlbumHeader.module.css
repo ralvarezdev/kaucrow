@@ -61,3 +61,19 @@
     font-size: var(--text-sm);
   }
 }
+
+/* Phones held sideways: there is almost no height, so keep only the essentials. */
+@media (max-height: 520px) {
+  .header {
+    top: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .name {
+    font-size: var(--text-lg);
+  }
+
+  .eyebrow {
+    display: none;
+  }
+}

@@ -34,3 +34,9 @@
     font-size: var(--text-xs);
   }
 }
+
+@media (max-height: 520px) {
+  .phrase {
+    display: none;
+  }
+}

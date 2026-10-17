@@ -18,7 +18,8 @@
   .prev,
   .next {
     top: auto;
-    bottom: 104px;
+    /* above the hint line, which sits above the switcher */
+    bottom: calc(var(--space-5) + var(--control-height) + var(--space-3) + 56px);
   }
 
   .prev {
@@ -27,5 +28,13 @@
 
   .next {
     left: calc(50% + 8px);
+  }
+}
+
+/* Sideways phones: no hint line, so the arrows can sit right above the switcher. */
+@media (max-height: 520px) {
+  .prev,
+  .next {
+    bottom: calc(var(--space-3) + var(--control-height) + var(--space-3));
   }
 }

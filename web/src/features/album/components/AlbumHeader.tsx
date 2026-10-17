@@ -5,12 +5,12 @@ import styles from './AlbumHeader.module.css'
 import { Phrase } from './Phrase'
 
 export function AlbumHeader() {
-  const small = useMediaQuery('(max-width: 640px)')
+  const compact = useMediaQuery('(max-width: 640px), (max-height: 520px)')
 
   return (
     <header className={styles.header}>
       <Crow
-        size={small ? 56 : 104}
+        size={compact ? 52 : 104}
         plate="none"
         label="The crow. Press to make it caw"
         className={styles.crow as string}
