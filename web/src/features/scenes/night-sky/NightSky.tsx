@@ -44,6 +44,7 @@ function SkyContent() {
   const slots = useAlbum((s) => s.slots)
   const focus = useAlbum((s) => s.focus)
   const pick = useAlbum((s) => s.pick)
+  const expand = useAlbum((s) => s.expand)
 
   const focused = photos[focus]
 
@@ -102,6 +103,7 @@ function SkyContent() {
           </mesh>
           <PhotoFrame
             photo={focused}
+            onSelect={() => expand(focused)}
             area={STAGE}
             rect={SKY_FOCUS}
             border={10}

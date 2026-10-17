@@ -57,6 +57,7 @@ function Room() {
   const slots = useAlbum((s) => s.slots)
   const focus = useAlbum((s) => s.focus)
   const pick = useAlbum((s) => s.pick)
+  const expand = useAlbum((s) => s.expand)
 
   const room = useRef<Group>(null)
   useFrame(({ pointer }, dt) => {
@@ -110,6 +111,7 @@ function Room() {
             {wall === 'back' && focused && (
               <PhotoFrame
                 photo={focused}
+                onSelect={() => expand(focused)}
                 area={area}
                 rect={GALLERY_FOCUS}
                 z={0.02}

@@ -24,9 +24,9 @@ describe('album store', () => {
 
   it('wraps the tour in both directions', () => {
     const n = useAlbum.getState().slots.length
-    useAlbum.getState().step(-1)
+    useAlbum.getState().step(-1, n)
     expect(useAlbum.getState().tour).toBe(n - 1)
-    useAlbum.getState().step(1)
+    useAlbum.getState().step(1, n)
     expect(useAlbum.getState().tour).toBe(0)
   })
 
@@ -50,5 +50,23 @@ describe('album store', () => {
     useAlbum.getState().addPhoto({ name: '', note: '' })
     const s = useAlbum.getState()
     expect(s.photos[s.focus]?.group).toBe('friends')
+  })
+})
+
+describe('step and cycle', () => {
+  it('tours only the shown slots', () => {
+    useAlbum.setState({ tour: 2 })
+    useAlbum.getState().step(1, 3)
+    expect(useAlbum.getState().tour).toBe(0)
+    useAlbum.getState().step(-1, 3)
+    expect(useAlbum.getState().tour).toBe(2)
+  })
+
+  it('swaps a shown slot with a hidden one and keeps every photo once', () => {
+    const before = useAlbum.getState().slots
+    useAlbum.getState().cycle(4)
+    const after = useAlbum.getState().slots
+    expect([...after].sort((a, b) => a - b)).toEqual([...before].sort((a, b) => a - b))
+    expect(after.slice(0, 4)).not.toEqual(before.slice(0, 4))
   })
 })

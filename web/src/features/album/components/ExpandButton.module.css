@@ -1,0 +1,14 @@
+.expand {
+  position: absolute;
+  top: calc(var(--space-7) + 56px);
+  right: var(--gutter);
+}
+
+@media (max-width: 640px) {
+  .expand {
+    top: calc(var(--space-5) + 44px);
+    height: 36px;
+    padding: 0 var(--space-4);
+    font-size: 13px;
+  }
+}

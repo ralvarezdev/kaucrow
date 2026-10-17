@@ -1,0 +1,52 @@
+.lightbox {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  padding: var(--space-5);
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+}
+
+.lightbox[open] {
+  display: grid;
+  place-items: center;
+}
+
+.lightbox::backdrop {
+  background: var(--color-scrim);
+}
+
+.figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.image {
+  display: block;
+  max-width: calc(100vw - 2 * var(--space-5));
+  max-height: calc(100dvh - 2 * var(--space-5) - 48px);
+  object-fit: contain;
+}
+
+.blank {
+  width: min(70vw, 560px);
+  aspect-ratio: 4 / 3;
+}
+
+.caption {
+  max-width: 60ch;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+.close {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-5);
+}

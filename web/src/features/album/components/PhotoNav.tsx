@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui'
+import { SCENES } from '@/features/scenes/registry'
 import { useAlbum } from '../store'
 import styles from './PhotoNav.module.css'
 
@@ -17,6 +18,7 @@ const ICON = {
 /** Prev/next beside the focus frame. Only meaningful for scenes that tour their slots. */
 export function PhotoNav() {
   const step = useAlbum((s) => s.step)
+  const count = useAlbum((s) => SCENES[s.scene].slotCount)
   return (
     <>
       <Button
@@ -24,7 +26,7 @@ export function PhotoNav() {
         size="icon"
         aria-label="Previous photo"
         className={styles.prev}
-        onClick={() => step(-1)}
+        onClick={() => step(-1, count)}
       >
         <svg {...ICON}>
           <path d="M15 5l-7 7 7 7" />
@@ -35,7 +37,7 @@ export function PhotoNav() {
         size="icon"
         aria-label="Next photo"
         className={styles.next}
-        onClick={() => step(1)}
+        onClick={() => step(1, count)}
       >
         <svg {...ICON}>
           <path d="M9 5l7 7-7 7" />

@@ -37,6 +37,7 @@ function Tabletop() {
   const slots = useAlbum((s) => s.slots)
   const focus = useAlbum((s) => s.focus)
   const pick = useAlbum((s) => s.pick)
+  const expand = useAlbum((s) => s.expand)
 
   const pan = useRef<Group>(null)
   useFrame(({ pointer }, dt) => {
@@ -84,6 +85,7 @@ function Tabletop() {
         {focused && (
           <PhotoFrame
             photo={focused}
+            onSelect={() => expand(focused)}
             area={TABLE_AREA}
             rect={TABLE_FOCUS}
             rotation={TABLE_FOCUS_ROTATION}
