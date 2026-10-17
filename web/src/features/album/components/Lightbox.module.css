@@ -27,6 +27,7 @@
 }
 
 .image {
+  border-radius: var(--radius-lg);
   display: block;
   max-width: calc(100vw - 2 * var(--space-5));
   max-height: calc(100dvh - 2 * var(--space-5) - 48px);
