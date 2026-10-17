@@ -4,11 +4,24 @@
   left: var(--gutter);
   right: var(--gutter);
   display: flex;
+  align-items: center;
+  justify-content: var(--header-align);
+  gap: var(--space-5);
+  pointer-events: none;
+}
+
+/* The crow is a button, so it takes pointer events inside the click-through header. */
+.crow {
+  flex: none;
+  pointer-events: auto;
+}
+
+.text {
+  display: flex;
   flex-direction: column;
   gap: 6px;
   align-items: var(--header-align);
   text-align: var(--header-align);
-  pointer-events: none;
 }
 
 .eyebrow {
@@ -35,8 +48,9 @@
 @media (max-width: 640px) {
   .header {
     top: var(--space-5);
-    /* leave room for the add button */
+    /* leave room for the buttons on the right */
     right: 148px;
+    gap: var(--space-3);
   }
 
   .eyebrow {

@@ -1,4 +1,3 @@
-import { Crow } from '@/components/Crow'
 import { Chip } from '@/components/ui'
 import { SCENE_IDS } from '@/features/scenes/ids'
 import { SCENES } from '@/features/scenes/registry'
@@ -12,7 +11,6 @@ export function SceneSwitcher() {
 
   return (
     <nav className={styles.switcher} aria-label="Album view">
-      <Crow size={128} plate="none" label="The crow. Press to make it caw" />
       {SCENE_IDS.map((id) => (
         <Chip key={id} selected={scene === id} onClick={() => setScene(id)}>
           {SCENES[id].label}
