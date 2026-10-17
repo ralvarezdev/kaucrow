@@ -1,11 +1,16 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { SEED_PHOTOS } from './data/seed'
+import { FEATURED_PHOTO, photoUrl, SEED_PHOTOS } from './data/seed'
 import { useAlbum } from './store'
 
 const initial = useAlbum.getState()
 beforeEach(() => useAlbum.setState(initial, true))
 
 describe('album store', () => {
+  it('opens on the featured photo', () => {
+    const { photos, focus } = useAlbum.getState()
+    expect(photos[focus]?.imageUrl).toBe(photoUrl(FEATURED_PHOTO))
+  })
+
   it('swaps the picked slot with the focused photo', () => {
     const { focus, slots, pick } = useAlbum.getState()
     const hung = slots[3]

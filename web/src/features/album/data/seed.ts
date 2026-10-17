@@ -43,8 +43,15 @@ export const photoUrl = (n: number) => `/photos/${name(n)}`
 /** 480px copy, for the many small cards. */
 export const thumbUrl = (n: number) => `/photos/thumb/${name(n)}`
 
-// The tone paints first, so each frame already has colour while its image loads.
-export const SEED_PHOTOS: Photo[] = shuffled(PHOTO_NUMBERS).map((n, i) => ({
+/** The photo that opens the page, in the large focus frame: where he looks happiest. */
+export const FEATURED_PHOTO = 4
+
+// The store focuses the last photo, so the featured one goes last. The tone
+// paints first, so each frame already has colour while its image loads.
+export const SEED_PHOTOS: Photo[] = [
+  ...shuffled(PHOTO_NUMBERS.filter((n) => n !== FEATURED_PHOTO)),
+  FEATURED_PHOTO,
+].map((n, i) => ({
   tone: TONES[i % TONES.length] as string,
   imageUrl: photoUrl(n),
   name: 'Javier',
