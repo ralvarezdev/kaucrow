@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { FEATURED_PHOTO, photoUrl } from './data/seed'
 import { sceneFromQuery, useAlbum } from './store'
+import type { Photo } from './types'
 
 const initial = useAlbum.getState()
 beforeEach(() => useAlbum.setState(initial, true))
@@ -63,5 +64,34 @@ describe('sceneFromQuery', () => {
   it('falls back to the first scene for anything unknown', () => {
     expect(sceneFromQuery('')).toBe('night-sky')
     expect(sceneFromQuery('?scene=nope')).toBe('night-sky')
+  })
+})
+
+describe('expandStep', () => {
+  it('walks through the album and wraps around', () => {
+    const { photos, expand } = useAlbum.getState()
+    expand(photos[0] as Photo)
+    useAlbum.getState().expandStep(1)
+    expect(useAlbum.getState().expanded).toBe(photos[1])
+    useAlbum.getState().expandStep(-1)
+    useAlbum.getState().expandStep(-1)
+    expect(useAlbum.getState().expanded).toBe(photos.at(-1))
+  })
+
+  it('finds a Growing card by its full image, not its thumbnail', () => {
+    const { photos } = useAlbum.getState()
+    const card: Photo = {
+      ...(photos[3] as Photo),
+      imageUrl: '/photos/thumb/x.webp',
+      fullUrl: photos[3]?.imageUrl as string,
+    }
+    useAlbum.getState().expand(card)
+    useAlbum.getState().expandStep(1)
+    expect(useAlbum.getState().expanded).toBe(photos[4])
+  })
+
+  it('does nothing when no photo is expanded', () => {
+    useAlbum.getState().expandStep(1)
+    expect(useAlbum.getState().expanded).toBeNull()
   })
 })

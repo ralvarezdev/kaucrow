@@ -162,8 +162,9 @@ Five views, switched from the bottom-left:
 
 Things you can do:
 
-- **Click the large photo** (or press *Expand photo*) to see it big, at its own
-  proportions. Esc closes it.
+- **Click the large photo** to see it big, at its own proportions. The arrows
+  (or the left and right arrow keys) walk through the album, and a click
+  outside the photo or Esc closes it.
 - **Click any smaller photo** to bring it into focus.
 - **Watch it change.** Every few seconds one shown photo is swapped for one
   waiting out of sight, so every photo gets its turn.

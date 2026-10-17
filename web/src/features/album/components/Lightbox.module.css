@@ -9,6 +9,10 @@
   color: var(--color-text);
 }
 
+.lightbox:focus {
+  outline: none;
+}
+
 .lightbox[open] {
   display: grid;
   place-items: center;
@@ -46,8 +50,17 @@
   text-align: center;
 }
 
-.close {
+/* Centred at the left and right edges; on a phone they sit over the photo's edges. */
+.prev,
+.next {
   position: absolute;
-  top: var(--space-5);
-  right: var(--space-5);
+  top: calc(50% - var(--control-height) / 2);
+}
+
+.prev {
+  left: var(--space-4);
+}
+
+.next {
+  right: var(--space-4);
 }

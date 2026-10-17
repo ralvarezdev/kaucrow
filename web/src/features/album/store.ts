@@ -19,6 +19,8 @@ type AlbumState = {
   expanded: Photo | null
   expand: (photo: Photo) => void
   collapse: () => void
+  /** Shows the next or previous album photo in the expanded view, wrapping around. */
+  expandStep: (delta: 1 | -1) => void
   /** Moves the tour through the first `count` slots, the ones the scene actually shows. */
   step: (delta: 1 | -1, count: number) => void
   /** Swaps a random shown slot (among the first `count`) with a hidden one, so the selection keeps changing. */
@@ -72,6 +74,15 @@ export const useAlbum = create<AlbumState>((set, get) => ({
 
   expand: (expanded) => set({ expanded }),
   collapse: () => set({ expanded: null }),
+  expandStep: (delta) =>
+    set(({ expanded, photos }) => {
+      if (!expanded || photos.length < 2) return {}
+      // A card in Growing carries a thumbnail; its full image is the album photo's own.
+      const key = expanded.fullUrl ?? expanded.imageUrl
+      const at = photos.findIndex((p) => p.imageUrl === key)
+      const next = photos[(at + delta + photos.length) % photos.length]
+      return at < 0 || !next ? {} : { expanded: next }
+    }),
   setScene: (scene) => set({ scene, expanded: null }),
   setFilter: (filter) => set({ filter }),
 }))

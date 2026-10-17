@@ -165,8 +165,9 @@ Cinco vistas, que se cambian abajo a la izquierda:
 
 Qué puedes hacer:
 
-- **Haz clic en la foto grande** (o pulsa *Expand photo*) para verla grande,
-  con sus propias proporciones. Esc la cierra.
+- **Haz clic en la foto grande** para verla grande, con sus propias
+  proporciones. Las flechas (o las teclas izquierda y derecha) recorren el
+  álbum, y un clic fuera de la foto o Esc la cierra.
 - **Haz clic en cualquier foto pequeña** para ponerla en primer plano.
 - **Míralo cambiar.** Cada pocos segundos una foto visible se cambia por una
   que esperaba fuera de vista, para que todas tengan su turno.
