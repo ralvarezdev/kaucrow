@@ -16,6 +16,8 @@ import {
   TABLE_TILT_DEG,
 } from './layout'
 
+/** Stage px kept visible across a phone in portrait: the focus photo and its neighbours. */
+const FOCUS_WIDTH = 840
 const CAMERA_Z = 14
 const BACKGROUND = '#cdba9a'
 const PAPER = '#fbf8f1'
@@ -106,7 +108,7 @@ function Tabletop() {
 
 export function Table() {
   return (
-    <SceneCanvas background={BACKGROUND} cameraZ={CAMERA_Z}>
+    <SceneCanvas background={BACKGROUND} cameraZ={CAMERA_Z} focusWidth={FOCUS_WIDTH}>
       <Tabletop />
     </SceneCanvas>
   )

@@ -3,13 +3,21 @@ import { useFrame } from '@react-three/fiber'
 import { MathUtils } from 'three'
 import { PhotoFrame } from '../shared/PhotoFrame'
 import { SceneCanvas } from '../shared/SceneCanvas'
+import { radial, usePaintedTexture } from '../shared/textures'
 import { rectCentre, STAGE } from '../shared/units'
 import { useSceneAlbum } from '../shared/useSceneAlbum'
 import { CONSTELLATIONS, SKY_FOCUS, SKY_SLOTS, type SkyDepth, type Waypoint } from './layout'
 
+/** Stage px kept visible across a phone in portrait: the focus photo and its neighbours. */
+const FOCUS_WIDTH = 840
 const CAMERA_Z = 10
 const BACKGROUND = '#0b0d1c'
 const ACCENT = '#f2d9a6'
+/** A soft halo behind the focus photo, fading to nothing so it has no edge. */
+const GLOW = radial(0.5, 0.5, [
+  [0, 'rgba(242,217,166,.2)'],
+  [0.75, 'rgba(242,217,166,0)'],
+])
 
 /**
  * Layers sit at real depth; the group scale cancels perspective so the layout
@@ -41,6 +49,7 @@ function waypoint(point: Waypoint): [number, number, number] {
 
 function SkyContent() {
   const { photos, slots, focused, pick, expand } = useSceneAlbum()
+  const glow = usePaintedTexture(GLOW)
 
   return (
     <>
@@ -92,8 +101,8 @@ function SkyContent() {
       {focused && (
         <>
           <mesh position={[0.3, 0.6, -0.05]}>
-            <planeGeometry args={[6.4, 5]} />
-            <meshBasicMaterial color={ACCENT} transparent opacity={0.07} />
+            <planeGeometry args={[7.2, 6]} />
+            <meshBasicMaterial map={glow} transparent depthWrite={false} />
           </mesh>
           <PhotoFrame
             photo={focused}
@@ -103,7 +112,6 @@ function SkyContent() {
             border={10}
             borderColor="#f4eee2"
             paper={focused.tone}
-            shadow={{ offsetY: 24, opacity: 0.5 }}
           />
         </>
       )}
@@ -113,7 +121,7 @@ function SkyContent() {
 
 export function NightSky() {
   return (
-    <SceneCanvas background={BACKGROUND} cameraZ={CAMERA_Z}>
+    <SceneCanvas background={BACKGROUND} cameraZ={CAMERA_Z} focusWidth={FOCUS_WIDTH}>
       <SkyContent />
     </SceneCanvas>
   )

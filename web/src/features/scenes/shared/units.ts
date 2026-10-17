@@ -27,8 +27,16 @@ export const fovFor = (cameraZ: number) =>
 export const STAGE_ASPECT = STAGE.width / STAGE.height
 
 /**
- * Camera distance that keeps the whole 1280×800 stage visible: on viewports
- * narrower than the stage the camera backs off, on wider ones it stays put.
+ * Camera distance that keeps the stage readable on any viewport.
+ *
+ * Wide viewports keep the camera where it is. As the viewport narrows toward a
+ * phone in portrait, the camera backs off less and less so the middle of the
+ * stage stays big: `focusWidth` is how much of the stage's width (in stage px)
+ * must stay visible on the narrowest screens. Scenes that need all of it, like
+ * a wide crowd, leave it at the full width and the whole stage always fits.
  */
-export const fitDistance = (cameraZ: number, aspect: number) =>
-  cameraZ * Math.max(1, STAGE_ASPECT / aspect)
+export const fitDistance = (cameraZ: number, aspect: number, focusWidth: number = STAGE.width) => {
+  const t = Math.min(1, Math.max(0, (aspect - 0.5) / 0.5))
+  const target = focusWidth + (STAGE.width - focusWidth) * t
+  return cameraZ * Math.max(1, target / (STAGE.height * aspect))
+}

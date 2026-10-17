@@ -8,6 +8,8 @@ import { rad, toWorld } from '../shared/units'
 import { useSceneAlbum } from '../shared/useSceneAlbum'
 import { GALLERY_FOCUS, GALLERY_SLOTS, ROOM, WALL_AREA, type Wall } from './layout'
 
+/** Stage px kept visible across a phone in portrait: the focus photo and its neighbours. */
+const FOCUS_WIDTH = 840
 const CAMERA_Z = 10
 const BACKGROUND = '#120c08'
 const FRAME_COLOR = '#3a281c'
@@ -148,7 +150,7 @@ function Room() {
 
 export function Gallery() {
   return (
-    <SceneCanvas background={BACKGROUND} cameraZ={CAMERA_Z}>
+    <SceneCanvas background={BACKGROUND} cameraZ={CAMERA_Z} focusWidth={FOCUS_WIDTH}>
       <Room />
     </SceneCanvas>
   )

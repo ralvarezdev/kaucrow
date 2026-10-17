@@ -29,6 +29,17 @@ describe('fitDistance', () => {
   })
 
   it('backs off on narrow viewports so the stage width still fits', () => {
-    expect(fitDistance(10, 0.8)).toBeCloseTo(20)
+    expect(fitDistance(10, 1.0)).toBeCloseTo(16)
+  })
+
+  it('on a phone in portrait keeps only the focus width in view when asked', () => {
+    const full = fitDistance(10, 0.46)
+    const focused = fitDistance(10, 0.46, 840)
+    expect(focused).toBeLessThan(full)
+    expect(focused).toBeCloseTo((10 * 840) / (800 * 0.46))
+  })
+
+  it('treats the focus width as the whole stage by default', () => {
+    expect(fitDistance(10, 0.7)).toBe(fitDistance(10, 0.7, 1280))
   })
 })
