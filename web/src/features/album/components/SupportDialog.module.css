@@ -1,13 +1,16 @@
 .trigger {
+  flex: none;
   gap: var(--space-2);
   pointer-events: auto;
 }
 
-/* On phones the bar is tight, so the button keeps only its heart. */
+/* On phones the bar is tight, so the button keeps only its heart, as a true circle that cannot be squeezed. */
 @media (max-width: 640px) {
   .trigger {
     width: var(--control-height);
+    height: var(--control-height);
     padding: 0;
+    border-radius: 50%;
   }
 
   .label {
