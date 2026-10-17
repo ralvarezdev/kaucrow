@@ -1,21 +1,24 @@
 import { Suspense } from 'react'
-import { Button } from '@/components/ui'
+import { Patrol } from '@/components/Ferris'
 import {
-  AddPhotoDialog,
   AlbumHeader,
+  ExpandButton,
   GroupFilter,
+  Lightbox,
   PhotoList,
   PhotoNav,
   SceneSwitcher,
+  SupportDialog,
   useAlbum,
+  useRotation,
 } from '@/features/album'
 import { SCENES } from '@/features/scenes/registry'
 import styles from './App.module.css'
 
 export function App() {
   const sceneId = useAlbum((s) => s.scene)
-  const openAdd = useAlbum((s) => s.openAdd)
   const scene = SCENES[sceneId]
+  useRotation(scene.slotCount)
 
   return (
     <div className={styles.app} data-scene={sceneId}>
@@ -27,17 +30,19 @@ export function App() {
 
       <div className={styles.overlay}>
         <AlbumHeader />
-        <Button variant="outline" className={styles.add} onClick={openAdd}>
-          Add a photo
-        </Button>
+        <SupportDialog />
+        {scene.slotCount > 0 && <ExpandButton />}
         {scene.hasTour && <PhotoNav />}
         {scene.hasGroups && <GroupFilter />}
         <p className={styles.hint}>{scene.hint}</p>
         <SceneSwitcher />
       </div>
 
+      {/* After the overlay so the crab walks in front of the crow and the chips. */}
+      <Patrol />
+
+      <Lightbox />
       {scene.slotCount > 0 && <PhotoList count={scene.slotCount} />}
-      <AddPhotoDialog />
     </div>
   )
 }
