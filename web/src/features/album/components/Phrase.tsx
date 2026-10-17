@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 import { phraseOrder } from '../data/phrases'
 import styles from './Phrase.module.css'
 
@@ -8,12 +9,13 @@ const SHOW_MS = 9000
 export function Phrase() {
   const order = useMemo(() => phraseOrder(), [])
   const [index, setIndex] = useState(0)
+  const reduced = usePrefersReducedMotion()
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (reduced) return
     const id = setInterval(() => setIndex((i) => (i + 1) % order.length), SHOW_MS)
     return () => clearInterval(id)
-  }, [order])
+  }, [order, reduced])
 
   // Keyed by index so each phrase restarts its fade in and out.
   return (

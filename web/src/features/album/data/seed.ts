@@ -1,3 +1,4 @@
+import { shuffled } from '@/lib/shuffle'
 import type { Photo } from '../types'
 
 const TONES = [
@@ -25,18 +26,6 @@ const TONES = [
 export const PHOTO_NUMBERS = Array.from({ length: 48 }, (_, i) => i + 1).filter(
   (n) => n !== 20 && n !== 21,
 )
-
-/** Fisher–Yates on a copy, so every page load starts from a different selection. */
-function shuffled<T>(items: readonly T[]): T[] {
-  const out = items.slice()
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    const tmp = out[i] as T
-    out[i] = out[j] as T
-    out[j] = tmp
-  }
-  return out
-}
 
 const name = (n: number) => `javier-${String(n).padStart(4, '0')}.webp`
 export const photoUrl = (n: number) => `/photos/${name(n)}`

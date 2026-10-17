@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 import { useAlbum } from './store'
 
 const INTERVAL_MS = 5000
@@ -10,12 +11,13 @@ const INTERVAL_MS = 5000
  */
 export function useRotation(count: number) {
   const cycle = useAlbum((s) => s.cycle)
+  const reduced = usePrefersReducedMotion()
 
   useEffect(() => {
-    if (count <= 0 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (count <= 0 || reduced) return
     const id = setInterval(() => {
       if (!document.hidden) cycle(count)
     }, INTERVAL_MS)
     return () => clearInterval(id)
-  }, [count, cycle])
+  }, [count, cycle, reduced])
 }

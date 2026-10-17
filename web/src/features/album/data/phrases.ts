@@ -1,3 +1,5 @@
+import { shuffled } from '@/lib/shuffle'
+
 /** Shown one at a time under the name. The first one opens the page; the rest follow in random order. */
 export const OPENING_PHRASE = 'Fly high, kaucrow.'
 
@@ -41,12 +43,11 @@ export const PHRASES: readonly string[] = [
 
 /** The opening phrase first, then every other one once, in a random order. */
 export function phraseOrder(random: () => number = Math.random): string[] {
-  const rest = PHRASES.filter((p) => p !== OPENING_PHRASE)
-  for (let i = rest.length - 1; i > 0; i--) {
-    const j = Math.floor(random() * (i + 1))
-    const tmp = rest[i] as string
-    rest[i] = rest[j] as string
-    rest[j] = tmp
-  }
-  return [OPENING_PHRASE, ...rest]
+  return [
+    OPENING_PHRASE,
+    ...shuffled(
+      PHRASES.filter((p) => p !== OPENING_PHRASE),
+      random,
+    ),
+  ]
 }
