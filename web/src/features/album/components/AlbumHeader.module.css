@@ -52,8 +52,6 @@
 @media (max-width: 640px) {
   .header {
     top: var(--space-5);
-    /* leave room for the buttons on the right */
-    right: 148px;
     gap: var(--space-3);
   }
 

@@ -4,6 +4,7 @@ import { SCENES } from '@/features/scenes/registry'
 import { PROFILE_URL } from '../config'
 import { useAlbum } from '../store'
 import styles from './SceneSwitcher.module.css'
+import { SupportDialog } from './SupportDialog'
 
 const OPTIONS = SCENE_IDS.map((id) => ({ value: id, label: SCENES[id].label }))
 
@@ -20,6 +21,7 @@ export function SceneSwitcher() {
         onChange={setScene}
         placement="top"
       />
+      <SupportDialog />
       <a className={styles.source} href={PROFILE_URL} target="_blank" rel="noopener noreferrer">
         @kaucrow on GitHub
       </a>

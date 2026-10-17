@@ -40,3 +40,14 @@
     bottom: var(--space-3);
   }
 }
+
+@media (max-width: 640px) {
+  .switcher {
+    gap: var(--space-3);
+  }
+
+  .source {
+    padding: 6px 10px;
+    font-size: var(--text-xs);
+  }
+}

@@ -7,7 +7,6 @@ import {
   PhotoList,
   PhotoNav,
   SceneSwitcher,
-  SupportDialog,
   useAlbum,
   useRotation,
 } from '@/features/album'
@@ -29,7 +28,6 @@ export function App() {
 
       <div className={styles.overlay}>
         <AlbumHeader />
-        <SupportDialog />
         {scene.hasTour && <PhotoNav />}
         {scene.hasGroups && <GroupFilter />}
         <p className={styles.hint}>{scene.hint}</p>

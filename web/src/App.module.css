@@ -30,7 +30,7 @@
 .hint {
   composes: muted from "./styles/text.module.css";
   position: absolute;
-  left: 50%;
+  right: var(--gutter);
   bottom: 28px;
   width: max-content;
   max-width: calc(100% - 2 * var(--gutter));
@@ -41,7 +41,6 @@
   font-size: var(--text-sm);
   letter-spacing: 0.06em;
   text-align: center;
-  transform: translateX(-50%);
   backdrop-filter: blur(6px);
 }
 
@@ -57,6 +56,9 @@
 
 @media (max-width: 1100px) {
   .hint {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
     /* above the switcher, which is centred along the bottom edge */
     bottom: calc(var(--space-5) + var(--control-height) + var(--space-3));
   }
