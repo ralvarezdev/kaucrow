@@ -1,4 +1,5 @@
 import { Chip } from '@/components/ui'
+import { SHOW_FAMILY } from '../config'
 import { useAlbum } from '../store'
 import type { GroupFilter as Filter } from '../types'
 import styles from './GroupFilter.module.css'
@@ -12,6 +13,9 @@ const OPTIONS: ReadonlyArray<{ id: Filter; label: string }> = [
 export function GroupFilter() {
   const filter = useAlbum((s) => s.filter)
   const setFilter = useAlbum((s) => s.setFilter)
+
+  // One group needs no filter.
+  if (!SHOW_FAMILY) return null
 
   return (
     <fieldset className={styles.filter}>

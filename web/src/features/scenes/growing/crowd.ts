@@ -1,3 +1,5 @@
+import { SHOW_FAMILY } from '@/features/album/config'
+import { PHOTO_NUMBERS, photoUrl, thumbUrl } from '@/features/album/data/seed'
 import type { Photo, PhotoGroup } from '@/features/album/types'
 import type { PxRect } from '../shared/units'
 
@@ -12,6 +14,9 @@ export type CrowdCard = {
 }
 
 /** Where each group clusters, in stage px (centre) and spread (radii). */
+/** With no family, the friends spread across the whole stage. */
+export const FRIENDS_ALONE = { cx: 640, cy: 440, rx: 560, ry: 240 }
+
 export const CLUSTERS: Record<PhotoGroup, { cx: number; cy: number; rx: number; ry: number }> = {
   friends: { cx: 400, cy: 440, rx: 340, ry: 240 },
   family: { cx: 930, cy: 430, rx: 240, ry: 210 },
@@ -32,21 +37,29 @@ export function mulberry32(seed: number): () => number {
   }
 }
 
-const tonePhoto = (tone: string, group: PhotoGroup): Photo => ({
-  tone,
-  name: '',
-  note: '',
-  group,
-  mine: false,
-})
+/** Every card gets one of the album's photos, in a fixed order so the crowd is the same on every load. */
+const cardPhoto = (tone: string, group: PhotoGroup, index: number): Photo => {
+  const n = PHOTO_NUMBERS[index % PHOTO_NUMBERS.length] as number
+  return {
+    tone,
+    imageUrl: thumbUrl(n),
+    fullUrl: photoUrl(n),
+    name: 'Javier',
+    note: '',
+    group,
+    mine: false,
+  }
+}
 
 function scatter(
   rnd: () => number,
   group: PhotoGroup,
   count: number,
   tones: readonly string[],
+  firstPhoto: number,
+  cluster = CLUSTERS[group],
 ): CrowdCard[] {
-  const { cx, cy, rx, ry } = CLUSTERS[group]
+  const { cx, cy, rx, ry } = cluster
   const cards: CrowdCard[] = []
   let guard = 0
 
@@ -74,7 +87,7 @@ function scatter(
         height: Math.round(height),
       },
       rotation: Math.round(rotation),
-      photo: tonePhoto(tone, group),
+      photo: cardPhoto(tone, group, firstPhoto + cards.length),
       depth: (width - 20) / 30,
       fresh: false,
     })
@@ -82,16 +95,17 @@ function scatter(
   return cards
 }
 
-/** The faint crowd of 72 friends and 30 family from the mockup. */
-export function generateCrowd(seed = 20241015): CrowdCard[] {
+/** The faint crowd of 72 friends and 30 family from the mockup; friends only when family is hidden. */
+export function generateCrowd(seed = 20241015, showFamily = SHOW_FAMILY): CrowdCard[] {
   const rnd = mulberry32(seed)
-  return [...scatter(rnd, 'friends', 72, COOL), ...scatter(rnd, 'family', 30, WARM)]
+  if (!showFamily) return scatter(rnd, 'friends', 102, COOL, 0, FRIENDS_ALONE)
+  return [...scatter(rnd, 'friends', 72, COOL, 0), ...scatter(rnd, 'family', 30, WARM, 72)]
 }
 
 /** Where a photo added this session lands: near its group's cluster centre. */
-export function placeNewCard(photo: Photo, index: number): CrowdCard {
+export function placeNewCard(photo: Photo, index: number, showFamily = SHOW_FAMILY): CrowdCard {
   const rnd = mulberry32(7919 + index * 104729)
-  const { cx, cy } = CLUSTERS[photo.group]
+  const { cx, cy } = showFamily ? CLUSTERS[photo.group] : FRIENDS_ALONE
   return {
     group: photo.group,
     rect: {

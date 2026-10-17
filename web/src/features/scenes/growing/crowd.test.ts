@@ -7,10 +7,16 @@ describe('generateCrowd', () => {
     expect(generateCrowd(1)).toEqual(generateCrowd(1))
   })
 
-  it('produces 72 friends and 30 family', () => {
-    const crowd = generateCrowd()
+  it('produces 72 friends and 30 family when family is shown', () => {
+    const crowd = generateCrowd(undefined, true)
     expect(crowd.filter((c) => c.group === 'friends')).toHaveLength(72)
     expect(crowd.filter((c) => c.group === 'family')).toHaveLength(30)
+  })
+
+  it('produces only friends when family is hidden', () => {
+    const crowd = generateCrowd(undefined, false)
+    expect(crowd).toHaveLength(102)
+    expect(crowd.every((c) => c.group === 'friends')).toBe(true)
   })
 
   it('keeps cards out of the header and controls', () => {
@@ -40,8 +46,8 @@ describe('card styling', () => {
   })
 
   it('places new cards by their group cluster', () => {
-    const family = placeNewCard(photo, 0)
-    const friends = placeNewCard({ ...photo, group: 'friends' }, 0)
+    const family = placeNewCard(photo, 0, true)
+    const friends = placeNewCard({ ...photo, group: 'friends' }, 0, true)
     expect(family.rect.x).toBeGreaterThan(friends.rect.x)
   })
 })

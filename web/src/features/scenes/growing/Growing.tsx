@@ -2,6 +2,7 @@ import { MapControls, Stars } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { type ElementRef, useEffect, useMemo, useRef, useState } from 'react'
 import { MathUtils } from 'three'
+import { SHOW_FAMILY } from '@/features/album/config'
 import { useAlbum } from '@/features/album/store'
 import type { PhotoGroup } from '@/features/album/types'
 import { PhotoFrame } from '../shared/PhotoFrame'
@@ -22,7 +23,9 @@ const HALOS: Record<
   { rect: { x: number; y: number; width: number; height: number }; paint: Paint }
 > = {
   friends: {
-    rect: { x: 40, y: 190, width: 720, height: 520 },
+    rect: SHOW_FAMILY
+      ? { x: 40, y: 190, width: 720, height: 520 }
+      : { x: 40, y: 170, width: 1200, height: 540 },
     paint: radial(0.5, 0.5, [
       [0, 'rgba(124,143,181,.30)'],
       [0.68, 'rgba(124,143,181,0)'],
@@ -38,7 +41,7 @@ const HALOS: Record<
 }
 
 const LABELS: Record<PhotoGroup, { text: string; x: number; y: number }> = {
-  friends: { text: 'Friends', x: 400, y: 706 },
+  friends: { text: 'Friends', x: SHOW_FAMILY ? 400 : 640, y: 706 },
   family: { text: 'Family', x: 930, y: 686 },
 }
 
@@ -98,6 +101,7 @@ function Label({ group }: { group: PhotoGroup }) {
 }
 
 function Card({ card, matches }: { card: CrowdCard; matches: boolean }) {
+  const expand = useAlbum((s) => s.expand)
   return (
     <PhotoFrame
       photo={card.photo}
@@ -109,6 +113,7 @@ function Card({ card, matches }: { card: CrowdCard; matches: boolean }) {
       paper={card.photo.tone}
       opacity={cardOpacity(card, matches)}
       blur={isBlurred(card) ? 1 : 0}
+      {...(matches && !isBlurred(card) ? { onSelect: () => expand(card.photo) } : {})}
       z={card.fresh ? 0.02 : 0}
     >
       {card.fresh && (
@@ -171,12 +176,12 @@ function Crowd() {
       <Controls />
       <Stars radius={120} depth={60} count={1500} factor={5} saturation={0} fade speed={0.3} />
       <Halo group="friends" dim={!showing('friends')} />
-      <Halo group="family" dim={!showing('family')} />
+      {SHOW_FAMILY && <Halo group="family" dim={!showing('family')} />}
       {cards.map((card, i) => (
         <Card key={i} card={card} matches={showing(card.group)} />
       ))}
       <Label group="friends" />
-      <Label group="family" />
+      {SHOW_FAMILY && <Label group="family" />}
     </>
   )
 }
