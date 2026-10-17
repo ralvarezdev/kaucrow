@@ -1,6 +1,5 @@
-import { Button } from '@/components/ui'
+import { HudButton } from '@/components/ui'
 import { useAlbum } from '../store'
-import styles from './ExpandButton.module.css'
 
 /** Opens the focused photo large; the same as clicking it on the canvas. */
 export function ExpandButton() {
@@ -8,8 +7,8 @@ export function ExpandButton() {
   const expand = useAlbum((s) => s.expand)
   if (!focused) return null
   return (
-    <Button variant="ghost" className={styles.expand} onClick={() => expand(focused)}>
+    <HudButton row={1} onClick={() => expand(focused)}>
       Expand photo
-    </Button>
+    </HudButton>
   )
 }

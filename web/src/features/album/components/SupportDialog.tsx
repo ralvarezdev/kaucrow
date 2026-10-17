@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Dialog } from '@/components/ui'
+import { Button, Dialog, HudButton } from '@/components/ui'
 import { HONOUR, SUPPORT_HEADINGS, SUPPORT_LINKS, type SupportKind } from '../data/support'
 import styles from './SupportDialog.module.css'
 
@@ -10,9 +10,7 @@ export function SupportDialog() {
 
   return (
     <>
-      <Button variant="ghost" className={styles.trigger} onClick={() => setOpen(true)}>
-        Ways to help
-      </Button>
+      <HudButton onClick={() => setOpen(true)}>Ways to help</HudButton>
       <Dialog open={open} title="Ways to help" onClose={() => setOpen(false)}>
         <div className={styles.body}>
           {KINDS.map((kind) => (

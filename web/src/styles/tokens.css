@@ -3,6 +3,13 @@
   --font-serif: "JetBrains Mono", ui-monospace, monospace;
   --font-sans: "Instrument Sans", system-ui, sans-serif;
 
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 14px;
+  --text-base: 15px;
+  --text-lg: 16px;
+
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;

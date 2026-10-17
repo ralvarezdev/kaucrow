@@ -7,3 +7,4 @@ export {
 export { Chip, type ChipProps } from './Chip'
 export { Dialog, type DialogProps } from './Dialog'
 export { Field, type TextAreaFieldProps, type TextFieldProps } from './Field'
+export { HudButton, type HudButtonProps } from './HudButton'

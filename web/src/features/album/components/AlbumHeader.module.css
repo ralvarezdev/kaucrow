@@ -25,9 +25,9 @@
 }
 
 .eyebrow {
+  composes: muted from "../../../styles/text.module.css";
   margin: 0;
-  color: var(--color-text-muted);
-  font-size: 12px;
+  font-size: var(--text-xs);
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
@@ -39,9 +39,9 @@
 }
 
 .years {
+  composes: muted from "../../../styles/text.module.css";
   margin: 0;
-  color: var(--color-text-muted);
-  font-size: 15px;
+  font-size: var(--text-base);
   letter-spacing: 0.14em;
 }
 
@@ -54,10 +54,10 @@
   }
 
   .eyebrow {
-    font-size: 11px;
+    font-size: var(--text-2xs);
   }
 
   .years {
-    font-size: 13px;
+    font-size: var(--text-sm);
   }
 }
