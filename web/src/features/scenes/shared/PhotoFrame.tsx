@@ -1,7 +1,8 @@
 import { useCursor } from '@react-three/drei'
-import type { ThreeEvent } from '@react-three/fiber'
+import { type ThreeEvent, useFrame } from '@react-three/fiber'
 import type { ReactNode } from 'react'
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
+import { Color, type MeshBasicMaterial } from 'three'
 import type { Photo } from '@/features/album/types'
 import { BlurredCard } from './BlurredCard'
 import { FaceStack } from './FaceStack'
@@ -59,6 +60,12 @@ export function PhotoFrame({
   children,
 }: PhotoFrameProps) {
   const [hovered, setHovered] = useState(false)
+
+  // The mat follows the photo's colour, easing to a new one instead of snapping ahead of the photo.
+  const paperMaterial = useRef<MeshBasicMaterial>(null)
+  const paperStart = useRef(new Color(paper)).current
+  const paperTarget = useMemo(() => new Color(paper), [paper])
+  useFrame((_, dt) => paperMaterial.current?.color.lerp(paperTarget, 1 - Math.exp(-9 * dt)))
   useCursor(hovered && onSelect !== undefined)
   // Filters and layer changes fade instead of snapping.
   const shown = useDamped(opacity)
@@ -135,7 +142,13 @@ export function PhotoFrame({
             radius={toWorld(Math.max(0, radius - border))}
             position={[0, 0, LAYER]}
           >
-            <meshBasicMaterial color={paper} transparent opacity={shown} toneMapped={false} />
+            <meshBasicMaterial
+              ref={paperMaterial}
+              color={paperStart}
+              transparent
+              opacity={shown}
+              toneMapped={false}
+            />
           </RoundedPlane>
           <group position={[photoX, photoY, LAYER * 2]}>
             <FaceStack photo={photo} w={photoW} h={photoH} radius={faceRadius} opacity={shown} />

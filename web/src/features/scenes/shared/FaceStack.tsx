@@ -1,32 +1,36 @@
 import { useTexture } from '@react-three/drei'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import type { Photo } from '@/features/album/types'
+import { type Entry, faceKey, newEntry, nextStack, visibility } from './faceStack'
 import { RoundedPlane } from './RoundedPlane'
 import { toWorld } from './units'
 import { useDamped } from './useDamped'
 
 type FaceProps = { w: number; h: number; radius: number; opacity: number }
-type Entry = { key: string; photo: Photo; initial: number }
-
-const faceKey = (p: Photo) => p.imageUrl ?? p.tone
 
 /**
- * When the photo changes, the new face fades in over the old one (which stays
- * opaque beneath it, so there's no mid-fade dip) and the old one is dropped.
+ * When the photo changes, the new face waits until its image has loaded, then
+ * fades in while the old one fades out. Both are translucent for that moment,
+ * so an old photo of another shape never sits solid underneath the new one.
  */
 export function FaceStack({ photo, w, h, radius, opacity }: FaceProps & { photo: Photo }) {
-  const key = faceKey(photo)
-  const [stack, setStack] = useState<Entry[]>(() => [{ key, photo, initial: 1 }])
+  const [stack, setStack] = useState<Entry[]>(() => [newEntry(photo, true)])
 
-  const top = stack[stack.length - 1]
-  if (top && top.key !== key) {
-    setStack([...stack.slice(-1), { key, photo, initial: 0 }])
-  }
+  if (stack[stack.length - 1]?.key !== faceKey(photo)) setStack(nextStack(stack, photo))
 
-  const settled = useCallback(
-    (k: string) => setStack((s) => (s.length > 1 && s[s.length - 1]?.key === k ? s.slice(-1) : s)),
+  const loaded = useCallback(
+    (key: string) =>
+      setStack((s) => s.map((e) => (e.key === key && !e.loaded ? { ...e, loaded: true } : e))),
     [],
   )
+  // Once the newest face is fully in, the faces under it are gone for good.
+  const settled = useCallback(
+    (key: string) =>
+      setStack((s) => (s.length > 1 && s[s.length - 1]?.key === key ? s.slice(-1) : s)),
+    [],
+  )
+
+  const visible = visibility(stack)
 
   return (
     <>
@@ -39,7 +43,9 @@ export function FaceStack({ photo, w, h, radius, opacity }: FaceProps & { photo:
           h={h}
           radius={radius}
           opacity={opacity}
+          visible={visible[index] ?? true}
           isTop={index === stack.length - 1}
+          onLoaded={loaded}
           onShown={settled}
         />
       ))}
@@ -50,7 +56,9 @@ export function FaceStack({ photo, w, h, radius, opacity }: FaceProps & { photo:
 function Face({
   entry,
   index,
+  visible,
   isTop,
+  onLoaded,
   onShown,
   w,
   h,
@@ -59,25 +67,39 @@ function Face({
 }: FaceProps & {
   entry: Entry
   index: number
+  visible: boolean
   isTop: boolean
+  onLoaded: (key: string) => void
   onShown: (key: string) => void
 }) {
-  const fade = useDamped(1, entry.initial, 9)
+  const fade = useDamped(visible ? 1 : 0, entry.first ? 1 : 0, 9)
   useEffect(() => {
     if (isTop && fade >= 1) onShown(entry.key)
   }, [isTop, fade, onShown, entry.key])
 
-  // Only the incoming face fades; faces beneath it stay solid.
-  const alpha = (isTop ? fade : 1) * opacity
+  const ready = useCallback(() => onLoaded(entry.key), [onLoaded, entry.key])
+  const alpha = fade * opacity
   const { photo } = entry
 
   return (
     <group position={[0, 0, index * 0.001]}>
+      {/* Only a frame's very first face shows its tone while loading; a replacement just waits. */}
       <Suspense
-        fallback={<ToneFace tone={photo.tone} w={w} h={h} radius={radius} opacity={alpha} />}
+        fallback={
+          entry.first ? (
+            <ToneFace tone={photo.tone} w={w} h={h} radius={radius} opacity={alpha} />
+          ) : null
+        }
       >
         {photo.imageUrl ? (
-          <ImageFace url={photo.imageUrl} w={w} h={h} radius={radius} opacity={alpha} />
+          <ImageFace
+            url={photo.imageUrl}
+            w={w}
+            h={h}
+            radius={radius}
+            opacity={alpha}
+            onReady={ready}
+          />
         ) : (
           <ToneFace tone={photo.tone} w={w} h={h} radius={radius} opacity={alpha} />
         )}
@@ -95,8 +117,17 @@ function ToneFace({ tone, w, h, radius, opacity }: FaceProps & { tone: string })
 }
 
 /** The whole photo at its own proportions, centred; the frame's paper shows in any spare space. */
-function ImageFace({ url, w, h, radius, opacity }: FaceProps & { url: string }) {
+function ImageFace({
+  url,
+  w,
+  h,
+  radius,
+  opacity,
+  onReady,
+}: FaceProps & { url: string; onReady: () => void }) {
   const texture = useTexture(url)
+  // Rendering this far means the texture has loaded.
+  useEffect(() => onReady(), [onReady])
   const { width, height } = texture.image as { width: number; height: number }
   const scale = Math.min(w / width, h / height)
   return (
