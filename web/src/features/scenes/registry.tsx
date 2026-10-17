@@ -48,4 +48,12 @@ export const SCENES: Record<SceneId, SceneDefinition> = {
     hint: 'Scroll to zoom in · Drag to look around',
     Component: lazy(() => import('./growing/Growing').then((m) => ({ default: m.Growing }))),
   },
+  dotfiles: {
+    label: "Kaucrow's dotfiles",
+    hasTour: false,
+    hasGroups: false,
+    slotCount: 4,
+    hint: 'Click a window to focus it',
+    Component: lazy(() => import('./dotfiles/Dotfiles').then((m) => ({ default: m.Dotfiles }))),
+  },
 }

@@ -22,7 +22,7 @@
 .name {
   margin: 0;
   color: var(--color-text);
-  font: var(--font-display-weight) clamp(40px, 7vw, var(--header-size)) / 1 var(--font-display);
+  font: var(--font-display-weight) clamp(20px, 4.4vw, var(--header-size)) / 1 var(--font-display);
 }
 
 .years {

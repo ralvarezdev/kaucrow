@@ -16,10 +16,10 @@
   --color-field-text: #f6efe2;
   --color-focus: #f2d9a6;
 
-  --font-display: "Instrument Serif", Georgia, serif;
+  --font-display: "JetBrains Mono", ui-monospace, monospace;
   --font-body: "Instrument Sans", system-ui, sans-serif;
-  --font-display-weight: 400;
-  --header-size: 80px;
+  --font-display-weight: 500;
+  --header-size: 44px;
   --header-align: start;
 }
 
@@ -37,10 +37,10 @@
   --color-field-text: #2b1d15;
   --color-focus: #f3e3c3;
 
-  --font-display: "Spectral", Georgia, serif;
+  --font-display: "JetBrains Mono", ui-monospace, monospace;
   --font-body: "Work Sans", system-ui, sans-serif;
-  --font-display-weight: 300;
-  --header-size: 72px;
+  --font-display-weight: 500;
+  --header-size: 44px;
   --header-align: center;
 }
 
@@ -58,13 +58,35 @@
   --color-field-text: #2e241b;
   --color-focus: #2e241b;
 
-  --font-display: "Newsreader", Georgia, serif;
+  --font-display: "JetBrains Mono", ui-monospace, monospace;
   --font-body: "Karla", system-ui, sans-serif;
-  --font-display-weight: 300;
-  --header-size: 64px;
+  --font-display-weight: 500;
+  --header-size: 44px;
   --header-align: start;
 }
 
 [data-scene="growing"] {
-  --header-size: 64px;
+  --header-size: 44px;
+}
+
+/* Palette and font from kaucrow/dotfiles: matugen colours on near-black, JetBrains Mono. */
+[data-scene="dotfiles"] {
+  --color-bg: #111415;
+  --color-surface: #191c1d;
+  --color-text: #e1e3e4;
+  --color-text-muted: #b3cad3;
+  --color-accent: #92d0e3;
+  --color-on-accent: #003641;
+  --color-border: rgb(146 208 227 / 0.45);
+  --color-overlay: rgb(17 20 21 / 0.6);
+  --color-scrim: rgb(8 10 10 / 0.78);
+  --color-field-bg: #111415;
+  --color-field-text: #e1e3e4;
+  --color-focus: #92d0e3;
+
+  --font-display: "JetBrains Mono", ui-monospace, monospace;
+  --font-body: "JetBrains Mono", ui-monospace, monospace;
+  --font-display-weight: 500;
+  --header-size: 44px;
+  --header-align: start;
 }

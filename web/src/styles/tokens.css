@@ -1,6 +1,6 @@
 /* Scene-independent design tokens. Scene themes live in themes.css. */
 :root {
-  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-serif: "JetBrains Mono", ui-monospace, monospace;
   --font-sans: "Instrument Sans", system-ui, sans-serif;
 
   --space-1: 4px;
