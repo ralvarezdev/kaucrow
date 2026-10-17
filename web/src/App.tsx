@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 import { Patrol } from '@/components/Ferris'
 import {
   AlbumHeader,
-  ExpandButton,
   GroupFilter,
   Lightbox,
   PhotoList,
@@ -31,7 +30,6 @@ export function App() {
       <div className={styles.overlay}>
         <AlbumHeader />
         <SupportDialog />
-        {scene.slotCount > 0 && <ExpandButton />}
         {scene.hasTour && <PhotoNav />}
         {scene.hasGroups && <GroupFilter />}
         <p className={styles.hint}>{scene.hint}</p>

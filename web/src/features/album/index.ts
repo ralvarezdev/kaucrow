@@ -1,5 +1,4 @@
 export { AlbumHeader } from './components/AlbumHeader'
-export { ExpandButton } from './components/ExpandButton'
 export { GroupFilter } from './components/GroupFilter'
 export { Lightbox } from './components/Lightbox'
 export { PhotoList } from './components/PhotoList'
