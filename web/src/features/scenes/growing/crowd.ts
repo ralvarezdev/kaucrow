@@ -70,7 +70,7 @@ function scatter(
     const y = cy + Math.sin(angle) * radius * ry
     // Keep clear of the header and the top-right controls.
     if (y < 120 || y > 690) continue
-    if (x < 460 && y < 200) continue
+    if (x < 560 && y < 230) continue
     if (x > 1080 && y < 120) continue
 
     const width = 20 + rnd() * 30

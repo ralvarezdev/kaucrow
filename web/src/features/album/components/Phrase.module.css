@@ -1,0 +1,36 @@
+.phrase {
+  max-width: 46ch;
+  min-height: 2.8em;
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.4;
+  animation: phrase-fade ease-in-out both;
+}
+
+@keyframes phrase-fade {
+  0% {
+    opacity: 0;
+  }
+
+  8%,
+  92% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phrase {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .phrase {
+    font-size: 12px;
+  }
+}

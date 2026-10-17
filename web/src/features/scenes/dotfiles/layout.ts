@@ -3,7 +3,7 @@ import type { PxRect } from '../shared/units'
 /** Hyprland's `gaps_in`. Tiles are laid out like a dwindle layout: one master, then a halving stack. */
 const GAP = 10
 
-const TOP = 150
+const TOP = 176
 const BOTTOM = 630
 const LEFT = 40
 const RIGHT = 1240
