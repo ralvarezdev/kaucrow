@@ -12,6 +12,9 @@ import { rectCentre, STAGE } from '../shared/units'
 import { useDamped } from '../shared/useDamped'
 import { type CrowdCard, cardOpacity, generateCrowd, isBlurred } from './crowd'
 
+/** The small cards in the crowd. */
+const RADIUS = 4
+
 const CAMERA_Z = 10
 const MIN_DISTANCE = 3
 const PAN_LIMIT = { x: 6.4, y: 4 }
@@ -106,6 +109,7 @@ function Card({ card, matches }: { card: CrowdCard; matches: boolean }) {
       photo={card.photo}
       area={STAGE}
       rect={card.rect}
+      radius={RADIUS}
       rotation={card.rotation}
       border={2}
       borderColor="#e9e4d8"

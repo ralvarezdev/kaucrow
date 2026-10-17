@@ -16,6 +16,9 @@ import {
   TABLE_TILT_DEG,
 } from './layout'
 
+/** Prints, with slightly rounded corners. */
+const RADIUS = 5
+
 /** Stage px kept visible across a phone in portrait: the focus photo and its neighbours. */
 const FOCUS_WIDTH = 840
 const CAMERA_Z = 14
@@ -69,6 +72,7 @@ function Tabletop() {
               photo={photo}
               area={TABLE_AREA}
               rect={print.rect}
+              radius={RADIUS}
               rotation={print.rotation}
               z={0.02}
               paper={PAPER}
@@ -85,6 +89,7 @@ function Tabletop() {
             onSelect={() => expand(focused)}
             area={TABLE_AREA}
             rect={TABLE_FOCUS}
+            radius={RADIUS}
             rotation={TABLE_FOCUS_ROTATION}
             z={TABLE_FOCUS_LIFT}
             paper="#fffdf8"

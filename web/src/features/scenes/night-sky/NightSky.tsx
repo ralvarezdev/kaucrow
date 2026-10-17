@@ -8,6 +8,9 @@ import { rectCentre, STAGE } from '../shared/units'
 import { useSceneAlbum } from '../shared/useSceneAlbum'
 import { CONSTELLATIONS, SKY_FOCUS, SKY_SLOTS, type SkyDepth, type Waypoint } from './layout'
 
+/** Soft corners on the floating photo cards. */
+const RADIUS = 6
+
 /** Stage px kept visible across a phone in portrait: the focus photo and its neighbours. */
 const FOCUS_WIDTH = 840
 const CAMERA_Z = 10
@@ -84,6 +87,7 @@ function SkyContent() {
                   photo={photo}
                   area={STAGE}
                   rect={slot.rect}
+                  radius={RADIUS}
                   rotation={slot.rotation}
                   border={layer.border}
                   borderColor={layer.borderColor}
@@ -109,6 +113,7 @@ function SkyContent() {
             onSelect={() => expand(focused)}
             area={STAGE}
             rect={SKY_FOCUS}
+            radius={RADIUS}
             border={10}
             borderColor="#f4eee2"
             paper={focused.tone}

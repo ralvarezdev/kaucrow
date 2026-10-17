@@ -8,6 +8,9 @@ import { rad, toWorld } from '../shared/units'
 import { useSceneAlbum } from '../shared/useSceneAlbum'
 import { GALLERY_FOCUS, GALLERY_SLOTS, ROOM, WALL_AREA, type Wall } from './layout'
 
+/** Framed photos: only a hint of rounding, so they still read as hung frames. */
+const RADIUS = 3
+
 /** Stage px kept visible across a phone in portrait: the focus photo and its neighbours. */
 const FOCUS_WIDTH = 840
 const CAMERA_Z = 10
@@ -111,6 +114,7 @@ function Room() {
                 onSelect={() => expand(focused)}
                 area={area}
                 rect={GALLERY_FOCUS}
+                radius={RADIUS}
                 z={0.02}
                 border={8}
                 borderColor={FRAME_COLOR}
@@ -131,6 +135,7 @@ function Room() {
                   photo={photo}
                   area={area}
                   rect={slot.rect}
+                  radius={RADIUS}
                   z={0.02}
                   border={slot.border}
                   borderColor={FRAME_COLOR}

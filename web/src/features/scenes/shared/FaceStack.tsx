@@ -1,10 +1,11 @@
 import { useTexture } from '@react-three/drei'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import type { Photo } from '@/features/album/types'
+import { RoundedPlane } from './RoundedPlane'
 import { toWorld } from './units'
 import { useDamped } from './useDamped'
 
-type FaceProps = { w: number; h: number; opacity: number }
+type FaceProps = { w: number; h: number; radius: number; opacity: number }
 type Entry = { key: string; photo: Photo; initial: number }
 
 const faceKey = (p: Photo) => p.imageUrl ?? p.tone
@@ -13,7 +14,7 @@ const faceKey = (p: Photo) => p.imageUrl ?? p.tone
  * When the photo changes, the new face fades in over the old one (which stays
  * opaque beneath it, so there's no mid-fade dip) and the old one is dropped.
  */
-export function FaceStack({ photo, w, h, opacity }: FaceProps & { photo: Photo }) {
+export function FaceStack({ photo, w, h, radius, opacity }: FaceProps & { photo: Photo }) {
   const key = faceKey(photo)
   const [stack, setStack] = useState<Entry[]>(() => [{ key, photo, initial: 1 }])
 
@@ -36,6 +37,7 @@ export function FaceStack({ photo, w, h, opacity }: FaceProps & { photo: Photo }
           index={index}
           w={w}
           h={h}
+          radius={radius}
           opacity={opacity}
           isTop={index === stack.length - 1}
           onShown={settled}
@@ -52,6 +54,7 @@ function Face({
   onShown,
   w,
   h,
+  radius,
   opacity,
 }: FaceProps & {
   entry: Entry
@@ -70,35 +73,39 @@ function Face({
 
   return (
     <group position={[0, 0, index * 0.001]}>
-      <Suspense fallback={<ToneFace tone={photo.tone} w={w} h={h} opacity={alpha} />}>
+      <Suspense
+        fallback={<ToneFace tone={photo.tone} w={w} h={h} radius={radius} opacity={alpha} />}
+      >
         {photo.imageUrl ? (
-          <ImageFace url={photo.imageUrl} w={w} h={h} opacity={alpha} />
+          <ImageFace url={photo.imageUrl} w={w} h={h} radius={radius} opacity={alpha} />
         ) : (
-          <ToneFace tone={photo.tone} w={w} h={h} opacity={alpha} />
+          <ToneFace tone={photo.tone} w={w} h={h} radius={radius} opacity={alpha} />
         )}
       </Suspense>
     </group>
   )
 }
 
-function ToneFace({ tone, w, h, opacity }: FaceProps & { tone: string }) {
+function ToneFace({ tone, w, h, radius, opacity }: FaceProps & { tone: string }) {
   return (
-    <mesh>
-      <planeGeometry args={[toWorld(w), toWorld(h)]} />
+    <RoundedPlane width={toWorld(w)} height={toWorld(h)} radius={toWorld(radius)}>
       <meshBasicMaterial color={tone} transparent opacity={opacity} toneMapped={false} />
-    </mesh>
+    </RoundedPlane>
   )
 }
 
 /** The whole photo at its own proportions, centred; the frame's paper shows in any spare space. */
-function ImageFace({ url, w, h, opacity }: FaceProps & { url: string }) {
+function ImageFace({ url, w, h, radius, opacity }: FaceProps & { url: string }) {
   const texture = useTexture(url)
   const { width, height } = texture.image as { width: number; height: number }
   const scale = Math.min(w / width, h / height)
   return (
-    <mesh>
-      <planeGeometry args={[toWorld(width * scale), toWorld(height * scale)]} />
+    <RoundedPlane
+      width={toWorld(width * scale)}
+      height={toWorld(height * scale)}
+      radius={toWorld(radius)}
+    >
       <meshBasicMaterial map={texture} transparent opacity={opacity} toneMapped={false} />
-    </mesh>
+    </RoundedPlane>
   )
 }

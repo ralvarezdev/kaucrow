@@ -4,6 +4,9 @@ import { STAGE } from '../shared/units'
 import { useSceneAlbum } from '../shared/useSceneAlbum'
 import { DOTFILES_COLORS, DOTFILES_FOCUS, DOTFILES_SLOTS } from './layout'
 
+/** His Hyprland setup rounds windows by 10px (decoration.rounding). */
+const RADIUS = 10
+
 const CAMERA_Z = 10
 const INACTIVE_OPACITY = 0.8
 
@@ -21,6 +24,7 @@ function Windows() {
             photo={photo}
             area={STAGE}
             rect={rect}
+            radius={RADIUS}
             border={2}
             borderColor={DOTFILES_COLORS.inactive}
             paper={DOTFILES_COLORS.background}
@@ -35,6 +39,7 @@ function Windows() {
           onSelect={() => expand(focused)}
           area={STAGE}
           rect={DOTFILES_FOCUS}
+          radius={RADIUS}
           border={2}
           borderColor={DOTFILES_COLORS.active}
           paper={DOTFILES_COLORS.background}

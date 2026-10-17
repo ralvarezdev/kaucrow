@@ -10,6 +10,7 @@ export function BlurredCard({
   border,
   borderColor,
   paper,
+  radius,
   blur,
   opacity,
 }: {
@@ -18,6 +19,7 @@ export function BlurredCard({
   border: number
   borderColor: string
   paper: string
+  radius: number
   blur: number
   opacity: number
 }) {
@@ -34,12 +36,22 @@ export function BlurredCard({
       ctx.filter = `blur(${blur}px)`
       if (border > 0) {
         ctx.fillStyle = borderColor
-        ctx.fillRect(pad, pad, width, height)
+        ctx.beginPath()
+        ctx.roundRect(pad, pad, width, height, radius)
+        ctx.fill()
       }
       ctx.fillStyle = paper
-      ctx.fillRect(pad + border, pad + border, width - border * 2, height - border * 2)
+      ctx.beginPath()
+      ctx.roundRect(
+        pad + border,
+        pad + border,
+        width - border * 2,
+        height - border * 2,
+        Math.max(0, radius - border),
+      )
+      ctx.fill()
     },
-    [cardW, pad, blur, border, borderColor, paper, width, height],
+    [cardW, pad, blur, border, borderColor, paper, radius, width, height],
   )
 
   const texture = usePaintedTexture(paint, cardW * BLUR_RESOLUTION, cardH * BLUR_RESOLUTION)
