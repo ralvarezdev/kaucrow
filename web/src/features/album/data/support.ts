@@ -58,8 +58,3 @@ export const HONOUR: readonly Bilingual[] = [
     es: 'Si te gusta su nombre y su usuario, dedícale tus proyectos grandes: «Para Javier Pérez (@kaucrow)».',
   },
 ]
-
-export const DOMAIN_NOTE: Bilingual = {
-  en: 'This domain is owned by Ramón Álvarez, who will keep paying for it for the rest of his life, in memory of Javier.',
-  es: 'Este dominio es de Ramón Álvarez, quien seguirá pagándolo por el resto de su vida, en memoria de Javier.',
-}

@@ -49,15 +49,6 @@
   font-size: 15px;
 }
 
-.note {
-  margin: 0;
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-border);
-  color: var(--color-text-muted);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
 .actions {
   display: flex;
   justify-content: flex-end;

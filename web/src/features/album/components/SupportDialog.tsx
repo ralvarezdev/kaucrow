@@ -1,12 +1,6 @@
 import { useState } from 'react'
 import { Button, Dialog } from '@/components/ui'
-import {
-  DOMAIN_NOTE,
-  HONOUR,
-  SUPPORT_HEADINGS,
-  SUPPORT_LINKS,
-  type SupportKind,
-} from '../data/support'
+import { HONOUR, SUPPORT_HEADINGS, SUPPORT_LINKS, type SupportKind } from '../data/support'
 import styles from './SupportDialog.module.css'
 
 const KINDS: readonly SupportKind[] = ['donate', 'donor']
@@ -54,11 +48,6 @@ export function SupportDialog() {
               ))}
             </ul>
           </section>
-          <p className={styles.note}>
-            {DOMAIN_NOTE.en}
-            <br />
-            <span lang="es">{DOMAIN_NOTE.es}</span>
-          </p>
           <div className={styles.actions}>
             <Button onClick={() => setOpen(false)}>Close</Button>
           </div>
