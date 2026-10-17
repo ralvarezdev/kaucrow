@@ -17,6 +17,10 @@
 }
 
 .text {
+  /* A halo in the page colour keeps the text readable over bright parts of a scene, like the gallery wall. */
+  text-shadow:
+    0 0 6px var(--color-bg),
+    0 0 18px var(--color-bg);
   display: flex;
   flex-direction: column;
   gap: 6px;
