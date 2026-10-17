@@ -8,6 +8,23 @@
   gap: var(--space-2);
 }
 
+.source {
+  margin-left: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  text-underline-offset: 3px;
+  pointer-events: auto;
+}
+
+.source:hover {
+  color: var(--color-text);
+}
+
+.source:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
 @media (max-width: 900px) {
   .switcher {
     right: var(--gutter);
