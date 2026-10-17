@@ -29,4 +29,4 @@ decide together how to show them. / Estos archivos aún no se muestran en el
 sitio; se guardan aquí y decidiremos juntos cómo mostrarlos.
 
 Everything goes through a pull request and is read before it is merged. See
-the main [README](../README.md#share-your-memories--comparte-tus-recuerdos).
+the main [README](../README.md#share-your-memories) / el [README](../README.es.md#comparte-tus-recuerdos) principal.

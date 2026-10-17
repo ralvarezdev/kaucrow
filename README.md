@@ -2,6 +2,8 @@
 
 > *Fly high, kaucrow.*
 
+**English** · [Español](README.es.md)
+
 A small website to remember **Javier Pérez**, known online as **@kaucrow**
 (2005 – 2026), made by his friends. It is a photo album you can
 walk through: the photos hang in a night sky, a gallery, on a table, in a
@@ -24,13 +26,54 @@ This site borrows from all of that on purpose. The colours and the font come
 from his own setup, and the crab and the crow nod to what he loved, so the
 album feels like his corner of the internet.
 
-<!--
-  This section is short because it only says what the code and his public
-  profile can back up. Add what only his friends know: how you met him,
-  what he was working on, what he was like, the jokes, the projects, the
-  things he taught you. A few honest paragraphs matter more here than
-  anything in the sections below.
--->
+Javier Pérez was born on 2 January 2005 and died on 31 August 2026.
+
+### In my words
+
+*Ramón Álvarez ([@ralvarezdev](https://github.com/ralvarezdev)), who made this site.*
+
+I met Javier before either of us had started university, at a few talks at
+Universidad Rafael Urdaneta (URU). Later, during the degree, we ended up
+building things together, like RushCargo and LuxFutura. They were our humble
+beginnings, and I'm proud of them.
+
+He was one of the most brilliant people I have ever met, and I would say one
+of the most brilliant of our faculty, if not the most. He truly loved Rust
+and promoted it wherever he could. I will never forget that.
+
+He was also a very dedicated person, and good through and through: a good
+friend, a good teammate and a good student.
+
+He lived an active life; he had even started going to the gym. Then came
+leukemia. Some of its variants, like acute lymphoblastic leukemia (ALL), are
+extremely aggressive: in a matter of weeks they can turn into a serious,
+life-changing illness. When I found out how critical his condition was, I
+donated blood. I never imagined it would end this way.
+
+He was an incredible person, and I will miss him.
+
+### What you can do in his memory
+
+- **Donate blood**, if you can. People with leukemia often need transfusions.
+- **Get regular blood tests**, and see a doctor if something feels off. This
+  is not medical advice.
+- **Help people who need help**, however you can.
+- **Dedicate your big projects to him.** If you like his name and username,
+  put a line like this in every big project you do, now or in the future:
+
+  ```
+  Dedicated to Javier Pérez (@kaucrow)
+  ```
+
+- **Share what you remember** of him: see
+  [Share your memories](#share-your-memories).
+- **Give to leukemia research or join a marrow registry**: see
+  [Ways to help](#ways-to-help).
+
+### About this domain
+
+This domain is owned by me, Ramón Álvarez, and I will keep paying for it for
+the rest of my life, in memory of Javier.
 
 ### What his friends say
 
@@ -60,65 +103,45 @@ live, add it to that file.
 
 ---
 
-## Share your memories / Comparte tus recuerdos
+## Share your memories
 
-**English.** Everyone who knew Javier is invited to add to this page: your
-memories, your thanks, what you admired about him, what you remember, what
-you appreciate. You can also add phrases for the rotating line and photos you
+Everyone who knew Javier is invited to add to this page: your memories, your
+thanks, what you admired about him, what you remember, what you appreciate
+about him. You can also add phrases for the rotating line and photos you
 would like to share. Big or small, all of it counts.
 
-**Español.** Invitamos a todos los que conocieron a Javier a sumar a esta
-página: tus recuerdos, tus agradecimientos, las cosas que admirabas de él, lo
-que recuerdas, lo que aprecias de Javier, etc. También puedes añadir frases
-para la línea que rota y fotos que quieras compartir. Cualquier aporte, grande
-o pequeño, cuenta.
+### What you can add
 
-### What you can add / Qué puedes aportar
-
-| What / Qué | Where / Dónde |
+| What | Where |
 | --- | --- |
-| Memories, thanks, what you admired and appreciate / Recuerdos, agradecimientos, lo que admirabas y aprecias | a file in [`memories/`](memories/), see its [README](memories/README.md) |
-| Phrases / Frases | [`web/src/features/album/data/phrases.ts`](web/src/features/album/data/phrases.ts) |
-| Photos / Fotos | [`web/public/photos/`](web/public/photos/), see [Adding photos](#adding-photos) |
-| Names and notes for photos / Nombres y notas para fotos | [`web/src/features/album/data/seed.ts`](web/src/features/album/data/seed.ts) |
+| Memories, thanks, what you admired and appreciate | a file in [`memories/`](memories/), see its [README](memories/README.md) |
+| Phrases | [`web/src/features/album/data/phrases.ts`](web/src/features/album/data/phrases.ts) |
+| Photos | [`web/public/photos/`](web/public/photos/), see [Adding photos](#adding-photos) |
+| Names and notes for photos | [`web/src/features/album/data/seed.ts`](web/src/features/album/data/seed.ts) |
 
-### How: only through pull requests / Cómo: solo con pull requests
+### How: only through pull requests
 
 Every contribution goes through a **pull request**, and nothing is merged or
 published until it has been read. This is to prevent anything written or
 shared in bad faith, and to take care of Javier's memory and of the people in
 the photos.
 
-Toda contribución pasa por un **pull request**, y nada se integra ni se
-publica hasta que haya sido leído. Es para evitar cualquier mala intención y
-para cuidar la memoria de Javier y a las personas que aparecen en las fotos.
-
 1. Ask for access, or send what you want to add to the person who looks after
    the repository, [@ralvarezdev](https://github.com/ralvarezdev), who can
-   open the pull request for you. The repository is private for now. /
-   Pide acceso, o envía lo que quieras añadir a quien cuida el repositorio,
-   [@ralvarezdev](https://github.com/ralvarezdev), que puede abrir el pull
-   request por ti. Por ahora el repositorio es privado.
-2. Make your change on a branch and open a pull request against `main`. /
-   Haz tu cambio en una rama y abre un pull request hacia `main`.
-3. Wait for it to be read and merged. We may ask you to change something. /
-   Espera a que lo lean y lo integren. Es posible que te pidamos cambiar algo.
+   open the pull request for you. The repository is private for now.
+2. Make your change on a branch and open a pull request against `main`.
+3. Wait for it to be read and merged. We may ask you to change something.
 
-### Please / Por favor
+### Please
 
-- Be kind and honest. This is a place to remember him. / Sé amable y
-  honesto. Este es un lugar para recordarlo.
+- Be kind and honest. This is a place to remember him.
 - Share only photos you are allowed to share, and only if the people in them
-  would be happy to see them here. / Comparte solo fotos que puedas compartir,
-  y solo si a quienes salen en ellas les alegraría verlas aquí.
+  would be happy to see them here.
 - Do not include phone numbers, addresses, or other private data, and no
-  links or ads. / No incluyas teléfonos, direcciones ni otros datos privados,
-  ni enlaces o publicidad.
+  links or ads.
 - Convert photos as shown in [Adding photos](#adding-photos), so location
   metadata is removed. If that is hard, send the photo to the maintainer
-  instead of committing the original. / Convierte las fotos como se indica en
-  [Adding photos](#adding-photos), para quitar la ubicación. Si es difícil,
-  envía la foto al encargado en vez de subir el original.
+  instead of committing the original.
 
 ---
 
