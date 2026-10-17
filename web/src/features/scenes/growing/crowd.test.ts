@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { Photo } from '@/features/album/types'
-import { cardOpacity, generateCrowd, isBlurred, placeNewCard } from './crowd'
+import {
+  cardOpacity,
+  generateCrowd,
+  INFINITY,
+  infinityPoint,
+  isBlurred,
+  placeNewCard,
+} from './crowd'
 
 describe('generateCrowd', () => {
   it('is deterministic for a given seed', () => {
@@ -17,6 +24,14 @@ describe('generateCrowd', () => {
     const crowd = generateCrowd(undefined, false)
     expect(crowd).toHaveLength(102)
     expect(crowd.every((c) => c.group === 'friends')).toBe(true)
+  })
+
+  it('forms an infinity symbol when family is hidden', () => {
+    const xs = generateCrowd(undefined, false).map((c) => c.rect.x)
+    // Both loops are filled and the middle is crossed.
+    expect(xs.filter((x) => x < INFINITY.cx - 200).length).toBeGreaterThan(20)
+    expect(xs.filter((x) => x > INFINITY.cx + 200).length).toBeGreaterThan(20)
+    expect(xs.filter((x) => Math.abs(x - INFINITY.cx) < 100).length).toBeGreaterThan(5)
   })
 
   it('keeps cards out of the header and controls', () => {
@@ -49,5 +64,18 @@ describe('card styling', () => {
     const family = placeNewCard(photo, 0, true)
     const friends = placeNewCard({ ...photo, group: 'friends' }, 0, true)
     expect(family.rect.x).toBeGreaterThan(friends.rect.x)
+  })
+})
+
+describe('infinityPoint', () => {
+  it('passes through the centre and reaches both ends', () => {
+    expect(infinityPoint(Math.PI / 2).x).toBeCloseTo(INFINITY.cx, 0)
+    expect(infinityPoint(0).x).toBeCloseTo(INFINITY.cx + INFINITY.a / 1, 0)
+    expect(infinityPoint(Math.PI).x).toBeCloseTo(INFINITY.cx - INFINITY.a, 0)
+  })
+
+  it('returns a unit normal', () => {
+    const { nx, ny } = infinityPoint(1)
+    expect(Math.hypot(nx, ny)).toBeCloseTo(1, 3)
   })
 })
