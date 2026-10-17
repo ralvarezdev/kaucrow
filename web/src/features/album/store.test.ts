@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { FEATURED_PHOTO, photoUrl } from './data/seed'
-import { useAlbum } from './store'
+import { sceneFromQuery, useAlbum } from './store'
 
 const initial = useAlbum.getState()
 beforeEach(() => useAlbum.setState(initial, true))
@@ -51,5 +51,17 @@ describe('step and cycle', () => {
     const after = useAlbum.getState().slots
     expect([...after].sort((a, b) => a - b)).toEqual([...before].sort((a, b) => a - b))
     expect(after.slice(0, 4)).not.toEqual(before.slice(0, 4))
+  })
+})
+
+describe('sceneFromQuery', () => {
+  it('opens the scene named in the query', () => {
+    expect(sceneFromQuery('?scene=growing')).toBe('growing')
+    expect(sceneFromQuery('?x=1&scene=dotfiles')).toBe('dotfiles')
+  })
+
+  it('falls back to the first scene for anything unknown', () => {
+    expect(sceneFromQuery('')).toBe('night-sky')
+    expect(sceneFromQuery('?scene=nope')).toBe('night-sky')
   })
 })

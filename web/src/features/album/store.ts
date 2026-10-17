@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { SceneId } from '@/features/scenes/ids'
+import { SCENE_IDS, type SceneId } from '@/features/scenes/ids'
 import { SEED_PHOTOS } from './data/seed'
 import type { GroupFilter, Photo } from './types'
 
@@ -29,12 +29,18 @@ type AlbumState = {
 
 const lastIndex = SEED_PHOTOS.length - 1
 
+/** `?scene=growing` opens that view, so a link can point at one. Anything else opens the first. */
+export function sceneFromQuery(search: string): SceneId {
+  const wanted = new URLSearchParams(search).get('scene')
+  return SCENE_IDS.find((id) => id === wanted) ?? 'night-sky'
+}
+
 export const useAlbum = create<AlbumState>((set, get) => ({
   photos: SEED_PHOTOS,
   slots: Array.from({ length: lastIndex }, (_, i) => i),
   focus: lastIndex,
   tour: 0,
-  scene: 'night-sky',
+  scene: sceneFromQuery(typeof location === 'undefined' ? '' : location.search),
   expanded: null,
   filter: 'all',
 
