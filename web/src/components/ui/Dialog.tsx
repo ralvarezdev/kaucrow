@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import styles from './Dialog.module.css'
 
 export type DialogProps = {
@@ -12,6 +12,7 @@ export type DialogProps = {
 /** Modal built on the native <dialog>: focus trap, Esc and backdrop come free. */
 export function Dialog({ open, title, onClose, children }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null)
+  const titleId = useId()
 
   useEffect(() => {
     const dialog = ref.current
@@ -21,8 +22,8 @@ export function Dialog({ open, title, onClose, children }: DialogProps) {
   }, [open])
 
   return (
-    <dialog ref={ref} className={styles.dialog} onClose={onClose} aria-labelledby="dialog-title">
-      <h2 id="dialog-title" className={styles.title}>
+    <dialog ref={ref} className={styles.dialog} onClose={onClose} aria-labelledby={titleId}>
+      <h2 id={titleId} className={styles.title}>
         {title}
       </h2>
       {children}
