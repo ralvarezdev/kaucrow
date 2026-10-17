@@ -1,29 +1,32 @@
 .select {
   position: relative;
   display: inline-flex;
-  align-items: center;
   color: var(--color-text);
   pointer-events: auto;
 }
 
 .control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
   height: var(--control-height);
   min-width: 11.5rem;
-  padding: 0 calc(var(--space-5) + 12px) 0 var(--space-4);
+  padding: 0 var(--space-4);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   background: var(--color-overlay);
   color: inherit;
   font: inherit;
   font-size: var(--text-base);
+  text-align: left;
   cursor: pointer;
-  appearance: none;
-  transition:
-    border-color var(--duration-fast),
-    background var(--duration-fast);
+  backdrop-filter: blur(6px);
+  transition: border-color var(--duration-fast);
 }
 
-.control:hover {
+.control:hover,
+.control[aria-expanded="true"] {
   border-color: var(--color-text);
 }
 
@@ -32,14 +35,72 @@
   outline-offset: 3px;
 }
 
-/* The open list is drawn by the OS; give it the theme's surface where the browser allows. */
-.control option {
-  background: var(--color-surface);
-  color: var(--color-text);
+.chevron {
+  flex: none;
+  transition: transform var(--duration-fast);
 }
 
-.chevron {
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.list {
   position: absolute;
-  right: var(--space-4);
-  pointer-events: none;
+  left: 0;
+  z-index: 10;
+  min-width: 100%;
+  max-height: min(60dvh, 20rem);
+  margin: 0;
+  padding: var(--space-2);
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-panel);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+  animation: list-in var(--duration-fast) ease-out;
+}
+
+.top {
+  bottom: calc(100% + var(--space-2));
+}
+
+.bottom {
+  top: calc(100% + var(--space-2));
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 10px var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.active {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+.option[aria-selected="true"] {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+@keyframes list-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .list,
+  .chevron {
+    animation: none;
+    transition: none;
+  }
 }

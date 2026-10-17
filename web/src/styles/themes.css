@@ -6,7 +6,7 @@
 [data-scene="night-sky"],
 [data-scene="growing"] {
   --color-bg: #0b0d1c;
-  --color-surface: #171a36;
+  --color-panel: #171a36;
   --color-text: #f6efe2;
   --color-text-muted: #b9b7cc;
   --color-accent: #f2d9a6;
@@ -27,7 +27,7 @@
 
 [data-scene="gallery"] {
   --color-bg: #120c08;
-  --color-surface: #e6d8be;
+  --color-panel: #1e140e;
   --color-text: #f3e3c3;
   --color-text-muted: #c9b793;
   --color-accent: #f3e3c3;
@@ -48,7 +48,7 @@
 
 [data-scene="table"] {
   --color-bg: #cdba9a;
-  --color-surface: #fbf8f1;
+  --color-panel: #fbf8f1;
   --color-text: #2e241b;
   --color-text-muted: #4a3b2c;
   --color-accent: #2e241b;
@@ -70,7 +70,7 @@
 /* Palette and font from kaucrow/dotfiles: matugen colours on near-black, JetBrains Mono. */
 [data-scene="dotfiles"] {
   --color-bg: #111415;
-  --color-surface: #191c1d;
+  --color-panel: #191c1d;
   --color-text: #e1e3e4;
   --color-text-muted: #b3cad3;
   --color-accent: #92d0e3;

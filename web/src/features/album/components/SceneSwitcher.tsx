@@ -13,7 +13,13 @@ export function SceneSwitcher() {
 
   return (
     <div className={styles.switcher}>
-      <Select<SceneId> label="Album view" options={OPTIONS} value={scene} onChange={setScene} />
+      <Select<SceneId>
+        label="Album view"
+        options={OPTIONS}
+        value={scene}
+        onChange={setScene}
+        placement="top"
+      />
       <a className={styles.source} href={PROFILE_URL} target="_blank" rel="noopener noreferrer">
         @kaucrow on GitHub
       </a>
