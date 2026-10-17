@@ -36,3 +36,30 @@ export const SUPPORT_HEADINGS: Record<SupportKind, string> = {
   donate: 'Donate to research and patient support',
   donor: 'Become a bone marrow donor',
 }
+
+export type Bilingual = { en: string; es: string }
+
+/** What anyone who knew him can do, beyond giving money. */
+export const HONOUR: readonly Bilingual[] = [
+  {
+    en: 'Donate blood, if you can. People with leukemia often need transfusions.',
+    es: 'Dona sangre, si puedes. Las personas con leucemia suelen necesitar transfusiones.',
+  },
+  {
+    en: 'Get regular blood tests, and see a doctor if something feels off.',
+    es: 'Hazte análisis de sangre con regularidad, y ve al médico si algo no anda bien.',
+  },
+  {
+    en: 'Help people who need help, however you can.',
+    es: 'Ayuda a quien lo necesite, como puedas.',
+  },
+  {
+    en: 'If you like his name and username, dedicate your big projects to him: “For Javier Pérez (@kaucrow)”.',
+    es: 'Si te gusta su nombre y su usuario, dedícale tus proyectos grandes: «Para Javier Pérez (@kaucrow)».',
+  },
+]
+
+export const DOMAIN_NOTE: Bilingual = {
+  en: 'This domain is owned by Ramón Álvarez, who will keep paying for it for the rest of his life, in memory of Javier.',
+  es: 'Este dominio es de Ramón Álvarez, quien seguirá pagándolo por el resto de su vida, en memoria de Javier.',
+}
