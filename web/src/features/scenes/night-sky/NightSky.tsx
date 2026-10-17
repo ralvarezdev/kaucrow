@@ -1,10 +1,10 @@
 import { Line, Stars } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { MathUtils } from 'three'
-import { useAlbum } from '@/features/album/store'
 import { PhotoFrame } from '../shared/PhotoFrame'
 import { SceneCanvas } from '../shared/SceneCanvas'
 import { rectCentre, STAGE } from '../shared/units'
+import { useSceneAlbum } from '../shared/useSceneAlbum'
 import { CONSTELLATIONS, SKY_FOCUS, SKY_SLOTS, type SkyDepth, type Waypoint } from './layout'
 
 const CAMERA_Z = 10
@@ -40,13 +40,7 @@ function waypoint(point: Waypoint): [number, number, number] {
 }
 
 function SkyContent() {
-  const photos = useAlbum((s) => s.photos)
-  const slots = useAlbum((s) => s.slots)
-  const focus = useAlbum((s) => s.focus)
-  const pick = useAlbum((s) => s.pick)
-  const expand = useAlbum((s) => s.expand)
-
-  const focused = photos[focus]
+  const { photos, slots, focused, pick, expand } = useSceneAlbum()
 
   return (
     <>

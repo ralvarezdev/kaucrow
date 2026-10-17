@@ -1,20 +1,14 @@
-import { useAlbum } from '@/features/album/store'
 import { PhotoFrame } from '../shared/PhotoFrame'
 import { SceneCanvas } from '../shared/SceneCanvas'
 import { STAGE } from '../shared/units'
+import { useSceneAlbum } from '../shared/useSceneAlbum'
 import { DOTFILES_COLORS, DOTFILES_FOCUS, DOTFILES_SLOTS } from './layout'
 
 const CAMERA_Z = 10
 const INACTIVE_OPACITY = 0.8
 
 function Windows() {
-  const photos = useAlbum((s) => s.photos)
-  const slots = useAlbum((s) => s.slots)
-  const focus = useAlbum((s) => s.focus)
-  const pick = useAlbum((s) => s.pick)
-  const expand = useAlbum((s) => s.expand)
-
-  const focused = photos[focus]
+  const { photos, slots, focused, pick, expand } = useSceneAlbum()
 
   return (
     <>

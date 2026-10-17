@@ -1,11 +1,11 @@
 import { useFrame } from '@react-three/fiber'
 import { useRef } from 'react'
 import { type Group, MathUtils } from 'three'
-import { useAlbum } from '@/features/album/store'
 import { PhotoFrame } from '../shared/PhotoFrame'
 import { SceneCanvas } from '../shared/SceneCanvas'
 import { layers, linear, type Paint, radial, usePaintedTexture } from '../shared/textures'
 import { rad, toWorld } from '../shared/units'
+import { useSceneAlbum } from '../shared/useSceneAlbum'
 import { GALLERY_FOCUS, GALLERY_SLOTS, ROOM, WALL_AREA, type Wall } from './layout'
 
 const CAMERA_Z = 10
@@ -53,11 +53,7 @@ const CEILING: Paint = linear('y', [
 const px = toWorld
 
 function Room() {
-  const photos = useAlbum((s) => s.photos)
-  const slots = useAlbum((s) => s.slots)
-  const focus = useAlbum((s) => s.focus)
-  const pick = useAlbum((s) => s.pick)
-  const expand = useAlbum((s) => s.expand)
+  const { photos, slots, focused, pick, expand } = useSceneAlbum()
 
   const room = useRef<Group>(null)
   useFrame(({ pointer }, dt) => {
@@ -76,7 +72,6 @@ function Room() {
   const depth = px(ROOM.depth)
   const halfW = px(ROOM.halfWidth)
   const halfH = px(ROOM.halfHeight)
-  const focused = photos[focus]
 
   // Each wall is a group in its own px space: x → right, y → up, normal → into the room.
   const wallGroups: Record<Wall, { position: [number, number, number]; rotationY: number }> = {

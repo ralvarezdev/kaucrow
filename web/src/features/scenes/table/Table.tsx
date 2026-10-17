@@ -1,11 +1,11 @@
 import { useFrame } from '@react-three/fiber'
 import { useRef } from 'react'
 import { type Group, MathUtils } from 'three'
-import { useAlbum } from '@/features/album/store'
 import { PhotoFrame } from '../shared/PhotoFrame'
 import { SceneCanvas } from '../shared/SceneCanvas'
 import { layers, type Paint, radial, usePaintedTexture } from '../shared/textures'
 import { rad, toWorld } from '../shared/units'
+import { useSceneAlbum } from '../shared/useSceneAlbum'
 import {
   PRINTS,
   TABLE_AREA,
@@ -33,11 +33,7 @@ const TABLETOP: Paint = layers(
 )
 
 function Tabletop() {
-  const photos = useAlbum((s) => s.photos)
-  const slots = useAlbum((s) => s.slots)
-  const focus = useAlbum((s) => s.focus)
-  const pick = useAlbum((s) => s.pick)
-  const expand = useAlbum((s) => s.expand)
+  const { photos, slots, focused, pick, expand } = useSceneAlbum()
 
   const pan = useRef<Group>(null)
   useFrame(({ pointer }, dt) => {
@@ -48,7 +44,6 @@ function Tabletop() {
   })
 
   const top = usePaintedTexture(TABLETOP, 512, 384)
-  const focused = photos[focus]
 
   // Table centre → stage px → world offset from the camera axis.
   const originX = toWorld(TABLE_ORIGIN.x - 640)
