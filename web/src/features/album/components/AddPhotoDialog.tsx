@@ -2,6 +2,7 @@ import type { FormEvent } from 'react'
 import { useRef, useState } from 'react'
 import { Button, Dialog, Field } from '@/components/ui'
 import { SCENES } from '@/features/scenes/registry'
+import { ALBUM } from '../config'
 import { useAlbum } from '../store'
 import { PHOTO_GROUPS, type PhotoGroup } from '../types'
 import styles from './AddPhotoDialog.module.css'
@@ -42,7 +43,7 @@ export function AddPhotoDialog() {
   }
 
   return (
-    <Dialog open={open} title="Add a photo of [NAME]" onClose={close}>
+    <Dialog open={open} title={`Add a photo of ${ALBUM.name}`} onClose={close}>
       <form ref={formRef} className={styles.form} onSubmit={onSubmit}>
         <label className={styles.drop}>
           {fileName ?? 'Choose a photo from your device'}
