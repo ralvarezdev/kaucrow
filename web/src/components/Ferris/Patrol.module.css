@@ -1,0 +1,40 @@
+.lane {
+  --ferris-cycle: 40s;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.walker {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  animation: patrol var(--ferris-cycle) linear infinite;
+}
+
+@keyframes patrol {
+  from {
+    transform: translateX(-110px);
+  }
+
+  45%,
+  55% {
+    transform: translateX(45vw);
+  }
+
+  to {
+    transform: translateX(100vw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .walker {
+    animation: none;
+    transform: translateX(calc(100vw - 130px));
+  }
+}

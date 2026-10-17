@@ -1,0 +1,163 @@
+/*
+ * One 40s cycle shared with Patrol: walk for 45%, stand and wave from 45% to 55%,
+ * walk on. Without motion the crab simply stands with its claws down.
+ */
+.ferris {
+  display: block;
+  overflow: visible;
+}
+
+.shell {
+  fill: var(--ferris-shell, #f74c00);
+}
+
+.edge {
+  fill: var(--ferris-edge, #a52b00);
+}
+
+.white {
+  fill: #fff;
+}
+
+.eye {
+  fill: #000;
+}
+
+.legsA,
+.clawsRest {
+  opacity: 1;
+}
+
+.legsB,
+.legsStill,
+.clawsUp {
+  opacity: 0;
+}
+
+.legsMoving {
+  animation: moving var(--ferris-cycle, 40s) step-end infinite;
+}
+
+.legsA {
+  animation: step-a 0.4s step-end infinite;
+}
+
+.legsB {
+  animation: step-b 0.4s step-end infinite;
+}
+
+.legsStill {
+  animation: standing var(--ferris-cycle, 40s) step-end infinite;
+}
+
+.clawsRest {
+  animation: claws-rest var(--ferris-cycle, 40s) step-end infinite;
+}
+
+.clawsUp {
+  animation: claws-up var(--ferris-cycle, 40s) step-end infinite;
+}
+
+@keyframes moving {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  45% {
+    opacity: 0;
+  }
+
+  55% {
+    opacity: 1;
+  }
+}
+
+@keyframes standing {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  45% {
+    opacity: 1;
+  }
+
+  55% {
+    opacity: 0;
+  }
+}
+
+@keyframes step-a {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes step-b {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Claws snap up and down four times while the crab stands still. */
+@keyframes claws-rest {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  46%,
+  48.5%,
+  51%,
+  53.5% {
+    opacity: 0;
+  }
+
+  47.25%,
+  49.75%,
+  52.25%,
+  54.75% {
+    opacity: 1;
+  }
+}
+
+@keyframes claws-up {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  46%,
+  48.5%,
+  51%,
+  53.5% {
+    opacity: 1;
+  }
+
+  47.25%,
+  49.75%,
+  52.25%,
+  54.75% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .legsMoving,
+  .legsA,
+  .legsB,
+  .legsStill,
+  .clawsRest,
+  .clawsUp {
+    animation: none;
+  }
+}
