@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import type { Photo } from '@/features/album/types'
 import {
+  type CrowdCard,
   cardOpacity,
   generateCrowd,
   INFINITY,
   infinityPoint,
   isBlurred,
-  placeNewCard,
 } from './crowd'
 
 describe('generateCrowd', () => {
@@ -43,27 +42,22 @@ describe('generateCrowd', () => {
 })
 
 describe('card styling', () => {
-  const photo: Photo = { tone: '#000', name: '', note: '', group: 'family', mine: true }
-  const fresh = placeNewCard(photo, 0)
-  const far = { ...fresh, depth: 0, fresh: false }
+  const [near, far] = [
+    { ...generateCrowd()[0], depth: 1 },
+    { ...generateCrowd()[0], depth: 0 },
+  ] as [CrowdCard, CrowdCard]
 
   it('fades non-matching groups almost out', () => {
     expect(cardOpacity(far, false)).toBe(0.08)
   })
 
-  it('shows fresh cards at full opacity', () => {
-    expect(cardOpacity(fresh, true)).toBe(1)
+  it('makes nearer cards brighter', () => {
+    expect(cardOpacity(near, true)).toBeGreaterThan(cardOpacity(far, true))
   })
 
-  it('blurs only far, non-fresh cards', () => {
+  it('blurs only the far cards', () => {
     expect(isBlurred(far)).toBe(true)
-    expect(isBlurred(fresh)).toBe(false)
-  })
-
-  it('places new cards by their group cluster', () => {
-    const family = placeNewCard(photo, 0, true)
-    const friends = placeNewCard({ ...photo, group: 'friends' }, 0, true)
-    expect(family.rect.x).toBeGreaterThan(friends.rect.x)
+    expect(isBlurred(near)).toBe(false)
   })
 })
 

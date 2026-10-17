@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { FEATURED_PHOTO, photoUrl, SEED_PHOTOS } from './data/seed'
+import { FEATURED_PHOTO, photoUrl } from './data/seed'
 import { useAlbum } from './store'
 
 const initial = useAlbum.getState()
@@ -33,28 +33,6 @@ describe('album store', () => {
     expect(useAlbum.getState().tour).toBe(n - 1)
     useAlbum.getState().step(1, n)
     expect(useAlbum.getState().tour).toBe(0)
-  })
-
-  it('adds a photo, focuses it and closes the dialog', () => {
-    useAlbum.getState().openAdd()
-    const previousFocus = useAlbum.getState().focus
-    useAlbum.getState().addPhoto({ name: '  Ana ', note: '', group: 'family' })
-    const s = useAlbum.getState()
-    expect(s.photos).toHaveLength(SEED_PHOTOS.length + 1)
-    expect(s.photos[s.focus]).toMatchObject({
-      name: 'Ana',
-      note: '[Your note]',
-      group: 'family',
-      mine: true,
-    })
-    expect(s.slots.at(-1)).toBe(previousFocus)
-    expect(s.adding).toBe(false)
-  })
-
-  it('defaults a new photo to the friends group', () => {
-    useAlbum.getState().addPhoto({ name: '', note: '' })
-    const s = useAlbum.getState()
-    expect(s.photos[s.focus]?.group).toBe('friends')
   })
 })
 

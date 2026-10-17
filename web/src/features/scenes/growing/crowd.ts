@@ -10,13 +10,9 @@ export type CrowdCard = {
   photo: Photo
   /** 0 = far/faint, 1 = near/bright; drives opacity and blur. */
   depth: number
-  fresh: boolean
 }
 
 /** Where each group clusters, in stage px (centre) and spread (radii). */
-/** With no family, the friends spread across the whole stage. */
-export const FRIENDS_ALONE = { cx: 640, cy: 440, rx: 560, ry: 240 }
-
 export const CLUSTERS: Record<PhotoGroup, { cx: number; cy: number; rx: number; ry: number }> = {
   friends: { cx: 400, cy: 440, rx: 340, ry: 240 },
   family: { cx: 930, cy: 430, rx: 240, ry: 210 },
@@ -24,7 +20,6 @@ export const CLUSTERS: Record<PhotoGroup, { cx: number; cy: number; rx: number; 
 
 const COOL = ['#7C8FB5', '#8E7FA8', '#A6B8A0', '#D9B8A8', '#C9A27A']
 const WARM = ['#E3B77C', '#D9A28A', '#EBCB8B', '#C98B7B', '#D4A373']
-export const NEW_CARD_TONE = '#EBC77D'
 
 /** Small deterministic PRNG so the crowd looks the same on every load. */
 export function mulberry32(seed: number): () => number {
@@ -47,7 +42,6 @@ const cardPhoto = (tone: string, group: PhotoGroup, index: number): Photo => {
     name: 'Javier',
     note: '',
     group,
-    mine: false,
   }
 }
 
@@ -63,7 +57,7 @@ function makeCard(
   const width = 20 + rnd() * 30
   const height = width * (0.75 + rnd() * 0.5)
   const rotation = (rnd() - 0.5) * 16
-  const tone = tones[Math.floor(rnd() * tones.length)] ?? NEW_CARD_TONE
+  const tone = tones[Math.floor(rnd() * tones.length)] as string
   return {
     group,
     rect: {
@@ -75,7 +69,6 @@ function makeCard(
     rotation: Math.round(rotation),
     photo: cardPhoto(tone, group, photoIndex),
     depth: (width - 20) / 30,
-    fresh: false,
   }
 }
 
@@ -148,30 +141,11 @@ export function generateCrowd(seed = 20241015, showFamily = SHOW_FAMILY): CrowdC
   return [...scatter(rnd, 'friends', 72, COOL, 0), ...scatter(rnd, 'family', 30, WARM, 72)]
 }
 
-/** Where a photo added this session lands: near its group's cluster centre. */
-export function placeNewCard(photo: Photo, index: number, showFamily = SHOW_FAMILY): CrowdCard {
-  const rnd = mulberry32(7919 + index * 104729)
-  const { cx, cy } = showFamily ? CLUSTERS[photo.group] : FRIENDS_ALONE
-  return {
-    group: photo.group,
-    rect: {
-      x: cx + Math.round((rnd() - 0.5) * 120),
-      y: cy + Math.round((rnd() - 0.5) * 100),
-      width: 56,
-      height: 44,
-    },
-    rotation: -3,
-    photo,
-    depth: 1,
-    fresh: true,
-  }
-}
-
 /** Card opacity: nearer is brighter; non-matching groups almost disappear. */
 export function cardOpacity(card: CrowdCard, matches: boolean): number {
   if (!matches) return 0.08
-  return card.fresh ? 1 : 0.4 + 0.5 * card.depth
+  return 0.4 + 0.5 * card.depth
 }
 
-/** Only the farthest, non-fresh cards are blurred. */
-export const isBlurred = (card: CrowdCard) => !card.fresh && card.depth < 0.25
+/** Only the farthest cards are blurred. */
+export const isBlurred = (card: CrowdCard) => card.depth < 0.25

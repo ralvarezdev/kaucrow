@@ -13,15 +13,6 @@ export type Photo = {
   name: string
   note: string
   group: PhotoGroup
-  /** True for photos added in this session. */
-  mine: boolean
-}
-
-export type PhotoDraft = {
-  name: string
-  note: string
-  group?: PhotoGroup
-  imageUrl?: string
 }
 
 export type { SceneId }

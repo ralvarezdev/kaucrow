@@ -1,8 +1,7 @@
 import { create } from 'zustand'
 import type { SceneId } from '@/features/scenes/ids'
-import { NEW_PHOTO_TONE } from './config'
 import { SEED_PHOTOS } from './data/seed'
-import type { GroupFilter, Photo, PhotoDraft } from './types'
+import type { GroupFilter, Photo } from './types'
 
 /**
  * `slots[i]` is the index into `photos` currently hung at layout slot `i`.
@@ -14,7 +13,6 @@ type AlbumState = {
   focus: number
   tour: number
   scene: SceneId
-  adding: boolean
   filter: GroupFilter
   pick: (slot: number) => void
   /** The photo shown large in the expanded view, if any. */
@@ -27,9 +25,6 @@ type AlbumState = {
   cycle: (count: number) => void
   setScene: (scene: SceneId) => void
   setFilter: (filter: GroupFilter) => void
-  openAdd: () => void
-  closeAdd: () => void
-  addPhoto: (draft: PhotoDraft) => void
 }
 
 const lastIndex = SEED_PHOTOS.length - 1
@@ -40,7 +35,6 @@ export const useAlbum = create<AlbumState>((set, get) => ({
   focus: lastIndex,
   tour: 0,
   scene: 'night-sky',
-  adding: false,
   expanded: null,
   filter: 'all',
 
@@ -74,24 +68,4 @@ export const useAlbum = create<AlbumState>((set, get) => ({
   collapse: () => set({ expanded: null }),
   setScene: (scene) => set({ scene, expanded: null }),
   setFilter: (filter) => set({ filter }),
-  openAdd: () => set({ adding: true }),
-  closeAdd: () => set({ adding: false }),
-
-  addPhoto: (draft) =>
-    set(({ photos, slots, focus }) => {
-      const photo: Photo = {
-        tone: NEW_PHOTO_TONE,
-        name: draft.name.trim() || '[YOUR NAME]',
-        note: draft.note.trim() || '[Your note]',
-        group: draft.group ?? 'friends',
-        mine: true,
-        ...(draft.imageUrl ? { imageUrl: draft.imageUrl } : {}),
-      }
-      return {
-        photos: [...photos, photo],
-        slots: [...slots, focus],
-        focus: photos.length,
-        adding: false,
-      }
-    }),
 }))

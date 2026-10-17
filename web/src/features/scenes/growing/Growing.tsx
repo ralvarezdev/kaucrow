@@ -10,13 +10,12 @@ import { SceneCanvas, useFitDistance } from '../shared/SceneCanvas'
 import { type Paint, radial, usePaintedTexture } from '../shared/textures'
 import { rectCentre, STAGE } from '../shared/units'
 import { useDamped } from '../shared/useDamped'
-import { type CrowdCard, cardOpacity, generateCrowd, isBlurred, placeNewCard } from './crowd'
+import { type CrowdCard, cardOpacity, generateCrowd, isBlurred } from './crowd'
 
 const CAMERA_Z = 10
 const MIN_DISTANCE = 3
 const PAN_LIMIT = { x: 6.4, y: 4 }
 const BACKGROUND = '#0b0d1c'
-const ACCENT = '#f2d9a6'
 
 const HALOS: Record<
   PhotoGroup,
@@ -114,20 +113,7 @@ function Card({ card, matches }: { card: CrowdCard; matches: boolean }) {
       opacity={cardOpacity(card, matches)}
       blur={isBlurred(card) ? 1 : 0}
       {...(matches && !isBlurred(card) ? { onSelect: () => expand(card.photo) } : {})}
-      z={card.fresh ? 0.02 : 0}
-    >
-      {card.fresh && (
-        <mesh position={[0, 0, -0.01]}>
-          <planeGeometry args={[card.rect.width / 100 + 0.5, card.rect.height / 100 + 0.5]} />
-          <meshBasicMaterial
-            color={ACCENT}
-            transparent
-            opacity={0.22 * (matches ? 1 : 0)}
-            depthWrite={false}
-          />
-        </mesh>
-      )}
-    </PhotoFrame>
+    />
   )
 }
 
@@ -161,13 +147,7 @@ function Controls() {
 }
 
 function Crowd() {
-  const photos = useAlbum((s) => s.photos)
   const filter = useAlbum((s) => s.filter)
-
-  const cards = useMemo(() => {
-    const added = photos.filter((p) => p.mine).map((p, i) => placeNewCard(p, i))
-    return [...CROWD, ...added]
-  }, [photos])
 
   const showing = (g: PhotoGroup) => filter === 'all' || filter === g
 
@@ -177,7 +157,7 @@ function Crowd() {
       <Stars radius={120} depth={60} count={1500} factor={5} saturation={0} fade speed={0.3} />
       <Halo group="friends" dim={!showing('friends')} />
       {SHOW_FAMILY && <Halo group="family" dim={!showing('family')} />}
-      {cards.map((card, i) => (
+      {CROWD.map((card, i) => (
         <Card key={i} card={card} matches={showing(card.group)} />
       ))}
       <Label group="friends" />

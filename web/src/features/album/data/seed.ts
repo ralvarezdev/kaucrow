@@ -46,5 +46,4 @@ export const SEED_PHOTOS: Photo[] = [
   name: 'Javier',
   note: '',
   group: 'friends',
-  mine: false,
 }))
