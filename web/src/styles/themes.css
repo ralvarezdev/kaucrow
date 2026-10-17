@@ -2,7 +2,9 @@
  * One theme per scene, selected with [data-scene] on the app root.
  * Components only ever read the semantic --color-* / --font-* vars.
  */
-[data-scene="night-sky"] {
+/* Growing is a night sky too, so it shares the palette. */
+[data-scene="night-sky"],
+[data-scene="growing"] {
   --color-bg: #0b0d1c;
   --color-surface: #171a36;
   --color-text: #f6efe2;
@@ -63,10 +65,6 @@
   --font-display-weight: 500;
   --header-size: 44px;
   --header-align: start;
-}
-
-[data-scene="growing"] {
-  --header-size: 44px;
 }
 
 /* Palette and font from kaucrow/dotfiles: matugen colours on near-black, JetBrains Mono. */
