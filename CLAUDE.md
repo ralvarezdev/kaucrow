@@ -1,3 +1,4 @@
+@AGENTS.md
 @.rsk/CLAUDE.md
 
 <!-- rsk-mcp:start -->
