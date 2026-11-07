@@ -1,4 +1,7 @@
 {
+  "instructions": [
+    ".rsk/SKILLS.md"
+  ],
   "mcp": {
     "rsk": {
       "command": [
