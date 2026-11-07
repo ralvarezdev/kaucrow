@@ -257,10 +257,10 @@ task deploy
 It runs the CI gate and deploys `web/dist` as a
 Cloudflare Worker (`web/wrangler.jsonc`). `.env` is git-ignored.
 
-Migrating from the Pages project (`routes` is commented out on purpose; the hostname is not
-recorded in the repo): deploy once with no `routes` so the Worker is created on its `workers.dev`
+Migrating from the Pages project (`routes` is commented out on purpose; the hostname is
+`kaucrow.dev`): deploy once with no `routes` so the Worker is created on its `workers.dev`
 URL, and check it there. Only then remove the custom domain from the Pages project, uncomment
-`routes` with the real hostname and deploy again. Moving the domain has a short possible gap.
+`routes` (`kaucrow.dev`) and deploy again. Moving the domain has a short possible gap.
 
 ### How it is organised
 
