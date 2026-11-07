@@ -13,8 +13,9 @@ a pull request and is read before it is merged. Content rules live in `README.md
 - Gate: `task check` (Biome lint, typecheck, Vitest); `task ci` adds the build
 - Individually: `task lint:frontend`, `task typecheck:frontend`,
   `task test:frontend`, `task coverage:frontend`; `task fmt:fix` applies Biome fixes
-- Deploy: `task deploy` — runs `ci`, then uploads `web/dist` to Cloudflare Pages
-  (needs the three `CLOUDFLARE_*` values in `.env`, see `.env.example`)
+- Deploy: `task deploy` — runs `ci`, then deploys `web/dist` as the Cloudflare Worker
+  `kaucrow` (`web/wrangler.jsonc`; needs `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in `.env`,
+  see `.env.example`). `routes` is commented out until the Pages custom domain is moved (README, Deploy)
 
 ## Layout
 

@@ -1,0 +1,11 @@
+// Cloudflare Workers static assets: no Worker code, `dist/` is served as it is.
+// Deploy with `task deploy` from the repo root (CI gate first). Migration from the Pages project:
+// 1. deploy with `routes` commented out and check the `workers.dev` URL;
+// 2. remove the custom domain from the Pages project (Cloudflare dashboard);
+// 3. uncomment `routes` (set the real hostname: not recorded in the repo) and deploy again.
+{
+  "name": "kaucrow",
+  "compatibility_date": "2026-11-06",
+  "assets": { "directory": "./dist" },
+  // "routes": [{ "pattern": "<hostname>", "custom_domain": true }],
+}

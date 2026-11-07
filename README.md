@@ -225,7 +225,7 @@ them elsewhere without asking.
 | Lint | Biome |
 | Tests | Vitest and Testing Library |
 | Tasks | [Task](https://taskfile.dev) |
-| Hosting | Cloudflare Pages (direct upload) |
+| Hosting | Cloudflare Workers (static assets) |
 
 ### Run it
 
@@ -247,15 +247,20 @@ task ci               # check plus a production build
 
 ### Deploy
 
-Copy `.env.example` to `.env` and fill in `CLOUDFLARE_API_TOKEN`,
-`CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_PAGES_PROJECT`, then:
+Copy `.env.example` to `.env` and fill in `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID`, then:
 
 ```sh
 task deploy
 ```
 
-It runs the CI gate and uploads `web/dist` to Cloudflare Pages.
-`.env` is git-ignored.
+It runs the CI gate and deploys `web/dist` as a
+Cloudflare Worker (`web/wrangler.jsonc`). `.env` is git-ignored.
+
+Migrating from the Pages project (`routes` is commented out on purpose; the hostname is not
+recorded in the repo): deploy once with no `routes` so the Worker is created on its `workers.dev`
+URL, and check it there. Only then remove the custom domain from the Pages project, uncomment
+`routes` with the real hostname and deploy again. Moving the domain has a short possible gap.
 
 ### How it is organised
 
