@@ -247,8 +247,9 @@ task ci               # check plus a production build
 
 ### Deploy
 
-Copy `.env.example` to `.env` and fill in `CLOUDFLARE_API_TOKEN` and
-`CLOUDFLARE_ACCOUNT_ID`, then:
+Copy `.env.example` to `.env` and fill in `CLOUDFLARE_API_TOKEN`,
+`CLOUDFLARE_ACCOUNT_ID` and, for a custom domain, `SITE_HOST` (a bare hostname such as
+`kaucrow.dev`; unset deploys on `workers.dev` only), then:
 
 ```sh
 task deploy
@@ -257,10 +258,14 @@ task deploy
 It runs the CI gate and deploys `web/dist` as a
 Cloudflare Worker (`web/wrangler.jsonc`). `.env` is git-ignored.
 
-Migrating from the Pages project (`routes` is commented out on purpose; the hostname is
-`kaucrow.dev`): deploy once with no `routes` so the Worker is created on its `workers.dev`
-URL, and check it there. Only then remove the custom domain from the Pages project, uncomment
-`routes` (`kaucrow.dev`) and deploy again. Moving the domain has a short possible gap.
+The hostname is configuration, not code: `web/scripts/deploy.mjs` writes a git-ignored
+`web/wrangler.deploy.jsonc` with the custom-domain route for `SITE_HOST` and runs wrangler against
+it (`node web/scripts/deploy.mjs --dry-run` to inspect).
+
+Migrating from the Pages project (the domain is moved by hand): deploy once with `SITE_HOST`
+unset so the Worker is created on its `workers.dev` URL, and check it there. Only then remove the
+custom domain from the Pages project, set `SITE_HOST=kaucrow.dev` in `.env` and deploy again.
+Moving the domain has a short possible gap.
 
 ### How it is organised
 

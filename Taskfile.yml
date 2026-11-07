@@ -95,10 +95,10 @@ tasks:
       - task: frontend:build
 
   deploy:
-    desc: Run the CI gate, then deploy web/dist as the Cloudflare Worker `kaucrow` (static assets; needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID)
+    desc: Run the CI gate, then deploy web/dist as the Cloudflare Worker `kaucrow` on $SITE_HOST, or workers.dev when unset (static assets; needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID)
     preconditions:
       - sh: test -n "$CLOUDFLARE_API_TOKEN" -a -n "$CLOUDFLARE_ACCOUNT_ID"
         msg: Set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in .env (see .env.example)
     cmds:
       - task: ci
-      - pnpm dlx wrangler@4 deploy --config web/wrangler.jsonc
+      - node web/scripts/deploy.mjs

@@ -15,7 +15,7 @@ a pull request and is read before it is merged. Content rules live in `README.md
   `task test:frontend`, `task coverage:frontend`; `task fmt:fix` applies Biome fixes
 - Deploy: `task deploy` — runs `ci`, then deploys `web/dist` as the Cloudflare Worker
   `kaucrow` (`web/wrangler.jsonc`; needs `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in `.env`,
-  see `.env.example`). `routes` is commented out until the Pages custom domain is moved (README, Deploy)
+  see `.env.example`). the hostname is `SITE_HOST` in `.env` (no `routes` in the config); unset deploys on workers.dev only, so set it only once the Pages custom domain is moved (README, Deploy)
 
 ## Layout
 
