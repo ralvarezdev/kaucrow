@@ -7,6 +7,11 @@
 // (`node web/scripts/deploy.mjs --dry-run`).
 import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+
+// The API token is a secret handled by reference: CLOUDFLARE_API_TOKEN_FILE names a file that
+// holds it (mode 0600, outside the repo; a leading ~ is expanded), read here and handed to
+// wrangler only. CLOUDFLARE_API_TOKEN itself still works and wins when both are set.
 
 const host = (process.env.SITE_HOST ?? '').trim().toLowerCase();
 if (host && !/^(?=.{4,253}$)([a-z0-9-]+\.)+[a-z]{2,}$/.test(host)) {
@@ -30,8 +35,20 @@ console.error(
   host ? `deploying ${config.name} to ${host}` : `deploying ${config.name} with no custom domain (SITE_HOST unset)`,
 );
 
+const env = { ...process.env };
+const tokenFile = (env.CLOUDFLARE_API_TOKEN_FILE ?? '').trim().replace(/^~(?=\/|$)/, homedir());
+if (!env.CLOUDFLARE_API_TOKEN && tokenFile) {
+  try {
+    env.CLOUDFLARE_API_TOKEN = readFileSync(tokenFile, 'utf8').trim();
+  } catch {
+    console.error(`cannot read CLOUDFLARE_API_TOKEN_FILE (${tokenFile})`);
+    process.exit(2);
+  }
+}
+
 const run = spawnSync('pnpm', ['dlx', 'wrangler@4', 'deploy', '--config', out.pathname, ...process.argv.slice(2)], {
   stdio: 'inherit',
+  env,
   cwd: new URL('..', import.meta.url).pathname,
 });
 process.exit(run.status ?? 1);

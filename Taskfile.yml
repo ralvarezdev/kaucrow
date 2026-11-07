@@ -96,9 +96,8 @@ tasks:
 
   deploy:
     desc: Run the CI gate, then deploy web/dist as the Cloudflare Worker `kaucrow` on $SITE_HOST, or workers.dev when unset (static assets; needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID)
-    preconditions:
-      - sh: test -n "$CLOUDFLARE_API_TOKEN" -a -n "$CLOUDFLARE_ACCOUNT_ID"
-        msg: Set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in .env (see .env.example)
     cmds:
+      # Not a `preconditions:` entry: Task evaluates those before it loads the task's dotenv file.
+      - 'test -n "$CLOUDFLARE_API_TOKEN$CLOUDFLARE_API_TOKEN_FILE" -a -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "Set CLOUDFLARE_API_TOKEN_FILE (or CLOUDFLARE_API_TOKEN) and CLOUDFLARE_ACCOUNT_ID in .env (see .env.example)"; exit 1; }'
       - task: ci
       - node web/scripts/deploy.mjs
