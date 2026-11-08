@@ -1,0 +1,11 @@
+.cream {
+  fill: var(--crow-cream);
+}
+
+.ink {
+  fill: var(--crow-ink);
+}
+
+.sprite {
+  display: block;
+}

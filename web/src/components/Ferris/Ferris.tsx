@@ -1,6 +1,7 @@
 import { cx } from '@/lib/cx'
+import { gridPaths } from '@/lib/gridPaths'
 import styles from './Ferris.module.css'
-import { GRID, LAYERS, layerPaths, type Pixel } from './pixels'
+import { GRID, LAYERS, type Pixel } from './pixels'
 
 export type FerrisProps = {
   /** Width in px. Use a multiple of 48 to keep every pixel crisp. */
@@ -16,11 +17,11 @@ const COLOR_CLASS: Record<Pixel, string> = {
 }
 
 const PATHS = {
-  body: layerPaths(LAYERS.BODY),
-  legsA: layerPaths(LAYERS.LEGS_A),
-  legsB: layerPaths(LAYERS.LEGS_B),
-  rest: layerPaths(LAYERS.CLAWS_REST),
-  up: layerPaths(LAYERS.CLAWS_UP),
+  body: gridPaths<Pixel>(LAYERS.BODY),
+  legsA: gridPaths<Pixel>(LAYERS.LEGS_A),
+  legsB: gridPaths<Pixel>(LAYERS.LEGS_B),
+  rest: gridPaths<Pixel>(LAYERS.CLAWS_REST),
+  up: gridPaths<Pixel>(LAYERS.CLAWS_UP),
 }
 
 function Layer({

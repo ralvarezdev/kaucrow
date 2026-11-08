@@ -182,25 +182,4 @@ const CLAWS_UP: readonly string[] = [
   '................................................',
 ]
 
-/** Horizontal runs of one colour, merged per row, as one SVG path per colour. */
-export function layerPaths(layer: readonly string[]): Partial<Record<Pixel, string>> {
-  const out: Partial<Record<Pixel, string>> = {}
-  layer.forEach((row, y) => {
-    let x = 0
-    while (x < row.length) {
-      const c = row[x] as string
-      if (c === '.') {
-        x++
-        continue
-      }
-      let end = x
-      while (row[end + 1] === c) end++
-      const key = c as Pixel
-      out[key] = `${out[key] ?? ''}M${x} ${y}h${end - x + 1}v1h${-(end - x + 1)}z`
-      x = end + 1
-    }
-  })
-  return out
-}
-
 export const LAYERS = { BODY, LEGS_A, LEGS_B, CLAWS_REST, CLAWS_UP } as const

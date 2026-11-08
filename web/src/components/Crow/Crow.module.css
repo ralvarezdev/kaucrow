@@ -6,11 +6,3 @@
   line-height: 0;
   cursor: pointer;
 }
-
-.cream {
-  fill: var(--crow-cream);
-}
-
-.ink {
-  fill: var(--crow-ink);
-}

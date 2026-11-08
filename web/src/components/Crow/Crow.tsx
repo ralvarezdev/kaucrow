@@ -2,17 +2,8 @@ import type { PointerEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { cx } from '@/lib/cx'
 import styles from './Crow.module.css'
-import {
-  BODY_ROWS,
-  buildFrame,
-  CAW_LAST_FRAME,
-  FRAME_MS,
-  OUTLINE_ROWS,
-  rectsToPath,
-  rowsToRects,
-} from './pixels'
-
-export type CrowPlate = 'square' | 'none'
+import { type CrowPlate, CrowSprite } from './CrowSprite'
+import { buildFrame, CAW_LAST_FRAME, FRAME_MS } from './pixels'
 
 export type CrowProps = {
   size?: number
@@ -27,9 +18,6 @@ export type CrowProps = {
   /** Caws once each time this number goes up; the crow's way of reacting to what happens on the page. */
   cawSignal?: number
 }
-
-const BODY_PATH = rectsToPath(rowsToRects(BODY_ROWS))
-const OUTLINE_PATH = rectsToPath(rowsToRects(OUTLINE_ROWS))
 
 export function Crow({
   size = 240,
@@ -89,21 +77,7 @@ export function Crow({
       onPointerMove={onLook}
       onPointerLeave={() => setHover(null)}
     >
-      <svg
-        aria-hidden="true"
-        width={size}
-        height={size}
-        viewBox="0 0 48 48"
-        shapeRendering="crispEdges"
-      >
-        {plate === 'square' && <rect width="48" height="48" className={styles.cream} />}
-        <g transform={`translate(0 ${frame.hop})`}>
-          <path d={BODY_PATH} className={styles.cream} />
-          <path d={OUTLINE_PATH} className={styles.ink} />
-          <path d={rectsToPath(frame.cream)} className={styles.cream} />
-          <path d={rectsToPath(frame.ink)} className={styles.ink} />
-        </g>
-      </svg>
+      <CrowSprite size={size} plate={plate} frame={frame} />
     </button>
   )
 }
