@@ -30,6 +30,13 @@ tasks:
     cmds:
       - pnpm dev
 
+  proposals:cosmos:
+    desc: Serve the Cosmos proposal prototype (mockups/cosmos-preview) at http://localhost:5199
+    dir: web
+    deps: [frontend:install]
+    cmds:
+      - pnpm exec vite --config ../mockups/cosmos-preview/vite.config.mjs
+
   frontend:build:
     desc: Typecheck and build the web app
     dir: web
