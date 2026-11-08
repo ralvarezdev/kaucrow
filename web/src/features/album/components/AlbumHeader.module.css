@@ -16,6 +16,43 @@
   pointer-events: auto;
 }
 
+/* The header arrives once, when the splash lifts: the crow fades in and each line rises after the last. */
+.crow,
+.text > * {
+  animation: rise var(--duration-slow) var(--ease-out) both;
+  animation-delay: calc(var(--k, 0) * 140ms + 200ms);
+}
+
+.crow {
+  --k: 0;
+  animation-name: appear;
+}
+
+:global([data-booted="false"]) .crow,
+:global([data-booted="false"]) .text > * {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text > * {
+    animation-name: appear;
+  }
+}
+
 .text {
   /* A halo in the page colour keeps the text readable over bright parts of a scene, like the gallery wall. */
   text-shadow:

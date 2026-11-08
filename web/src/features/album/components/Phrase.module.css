@@ -8,18 +8,22 @@
   animation: phrase-fade ease-in-out both;
 }
 
+/* Each phrase rises in a little and lifts away as it fades. */
 @keyframes phrase-fade {
   0% {
     opacity: 0;
+    translate: 0 5px;
   }
 
   8%,
   92% {
     opacity: 1;
+    translate: 0 0;
   }
 
   100% {
     opacity: 0;
+    translate: 0 -4px;
   }
 }
 

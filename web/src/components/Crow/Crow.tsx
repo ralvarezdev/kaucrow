@@ -24,6 +24,8 @@ export type CrowProps = {
   /** Accessible name; the crow is a button that makes him caw. */
   label?: string
   className?: string
+  /** Caws once each time this number goes up; the crow's way of reacting to what happens on the page. */
+  cawSignal?: number
 }
 
 const BODY_PATH = rectsToPath(rowsToRects(BODY_ROWS))
@@ -37,6 +39,7 @@ export function Crow({
   lookY = 0,
   label = 'The crow. Press to make it caw',
   className,
+  cawSignal = 0,
 }: CrowProps) {
   const [tick, setTick] = useState(0)
   const [caw, setCaw] = useState(-1)
@@ -50,6 +53,10 @@ export function Crow({
     }, FRAME_MS)
     return () => clearInterval(id)
   }, [animate])
+
+  useEffect(() => {
+    if (cawSignal > 0) setCaw(0)
+  }, [cawSignal])
 
   // Idle glance: drift left and right until the pointer takes over.
   const idle = useMemo(() => {
