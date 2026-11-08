@@ -3,6 +3,7 @@ import { SCENE_IDS, type SceneId } from '@/features/scenes/ids'
 import { SCENES } from '@/features/scenes/registry'
 import { PROFILE_URL } from '../config'
 import { useAlbum } from '../store'
+import { FavoritesButton } from './FavoritesButton'
 import styles from './SceneSwitcher.module.css'
 import { SupportDialog } from './SupportDialog'
 
@@ -21,6 +22,7 @@ export function SceneSwitcher() {
         onChange={setScene}
         placement="top"
       />
+      <FavoritesButton />
       <SupportDialog />
       <a className={styles.source} href={PROFILE_URL} target="_blank" rel="noopener noreferrer">
         @kaucrow on GitHub

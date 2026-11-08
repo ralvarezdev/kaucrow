@@ -156,6 +156,12 @@
   right: var(--space-4);
 }
 
+.star {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .figure,
   .lightbox:not([open]) .figure {

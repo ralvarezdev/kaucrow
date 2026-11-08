@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { FEATURED_PHOTO, photoUrl } from './data/seed'
+import { FAVORITES_KEY } from './favorites'
 import { sceneFromQuery, useAlbum } from './store'
 import type { Photo } from './types'
 
@@ -93,5 +94,43 @@ describe('expandStep', () => {
   it('does nothing when no photo is expanded', () => {
     useAlbum.getState().expandStep(1)
     expect(useAlbum.getState().expanded).toBeNull()
+  })
+})
+
+describe('favorites', () => {
+  const photo: Photo = {
+    tone: '#000',
+    imageUrl: '/photos/a.webp',
+    name: 'a',
+    note: '',
+    group: 'friends',
+  }
+
+  beforeEach(() => localStorage.clear())
+
+  it('stars and un-stars a photo and saves the choice', () => {
+    useAlbum.getState().toggleFavorite(photo)
+    expect(useAlbum.getState().favorites).toEqual(['/photos/a.webp'])
+    expect(JSON.parse(localStorage.getItem(FAVORITES_KEY) ?? '[]')).toEqual(['/photos/a.webp'])
+    useAlbum.getState().toggleFavorite(photo)
+    expect(useAlbum.getState().favorites).toEqual([])
+  })
+
+  it('matches a thumbnail card to its album photo', () => {
+    const card: Photo = { ...photo, imageUrl: '/photos/thumb/a.webp', fullUrl: '/photos/a.webp' }
+    useAlbum.getState().toggleFavorite(card)
+    expect(useAlbum.getState().favorites).toEqual(['/photos/a.webp'])
+  })
+
+  it('walks only the favourites when opened from them', () => {
+    const [a, b, c] = useAlbum.getState().photos
+    if (!a?.imageUrl || !b?.imageUrl || !c?.imageUrl) throw new Error('seed photos missing')
+    useAlbum.setState({ favorites: [a.imageUrl, c.imageUrl] })
+    useAlbum.getState().expandFavorites()
+    expect(useAlbum.getState().expanded).toBe(a)
+    useAlbum.getState().expandStep(1)
+    expect(useAlbum.getState().expanded).toBe(c)
+    useAlbum.getState().expandStep(1)
+    expect(useAlbum.getState().expanded).toBe(a)
   })
 })

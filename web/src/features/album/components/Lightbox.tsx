@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui'
 import { cx } from '@/lib/cx'
+import { photoKey } from '../favorites'
 import { useAlbum } from '../store'
 import type { Photo } from '../types'
 import styles from './Lightbox.module.css'
@@ -26,6 +27,10 @@ export function Lightbox() {
   const photo = useAlbum((s) => s.expanded)
   const collapse = useAlbum((s) => s.collapse)
   const expandStep = useAlbum((s) => s.expandStep)
+  const favorites = useAlbum((s) => s.favorites)
+  const toggleFavorite = useAlbum((s) => s.toggleFavorite)
+  const key = photo ? photoKey(photo) : undefined
+  const starred = key !== undefined && favorites.includes(key)
   const ref = useRef<HTMLDialogElement>(null)
 
   // The last photo stays on screen while the dialog fades out.
@@ -80,6 +85,20 @@ export function Lightbox() {
           <Picture photo={shown} />
           {shown.note && <figcaption className={styles.caption}>{shown.note}</figcaption>}
         </figure>
+      )}
+      {photo && key && (
+        <Button
+          variant="translucent"
+          size="icon"
+          className={styles.star}
+          aria-label={starred ? 'Remove from favorites' : 'Add to favorites'}
+          aria-pressed={starred}
+          onClick={() => toggleFavorite(photo)}
+        >
+          <svg {...ICON} fill={starred ? 'currentColor' : 'none'}>
+            <path d="M12 3l2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.2 6.4 20.3l1.2-6.3L3 9.6l6.3-.8z" />
+          </svg>
+        </Button>
       )}
       <Button
         variant="translucent"
