@@ -23,7 +23,7 @@ const TONES = [
 ] as const
 
 /** Files in public/photos, javier-0001.webp … javier-0048.webp. The two videos (0020, 0021) are not images. */
-export const PHOTO_NUMBERS = Array.from({ length: 48 }, (_, i) => i + 1).filter(
+export const PHOTO_NUMBERS = Array.from({ length: 52 }, (_, i) => i + 1).filter(
   (n) => n !== 20 && n !== 21,
 )
 
