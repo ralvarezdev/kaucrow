@@ -1,0 +1,107 @@
+<!doctype html>
+<!--
+  Prototype of the "Cosmos" view, one of the proposals in mockups/. Run it with `task proposals:cosmos`
+  (it needs a dev server: WebGL will not load textures from file://). It is not part of the app or its build.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>kaucrow — Cosmos (prototype)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap"
+    />
+    <style>
+      :root {
+        --ink: #f6efe2;
+        --muted: #b9b7cc;
+        --accent: #f2d9a6;
+        --overlay: rgb(14 16 32 / 0.6);
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --crow-cream: #fff1e8;
+        --crow-ink: #000;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; background: #0b0d1c; color: var(--ink); font: 15px/1.5 "Instrument Sans", system-ui, sans-serif; overflow: hidden; }
+      #app { position: fixed; inset: 0; }
+      canvas#gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+      .hud { position: absolute; inset: 0; pointer-events: none; }
+      .hud button, .hud label, .hud a { pointer-events: auto; }
+      .head { position: absolute; left: clamp(16px, 4.4vw, 56px); top: 40px; display: flex; gap: 22px; align-items: center; text-shadow: 0 0 6px #0b0d1c, 0 0 18px #0b0d1c; transition: opacity 0.6s; }
+      .head .crow { pointer-events: auto; background: none; border: 0; padding: 0; cursor: pointer; line-height: 0; --crow-cream: #fff1e8; --crow-ink: #000; }
+      .eyebrow { margin: 0; color: var(--muted); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
+      .name { margin: 4px 0 0; font: 500 40px/1 "JetBrains Mono", monospace; }
+      .years { margin: 6px 0 0; color: var(--muted); font-size: 15px; letter-spacing: 0.14em; }
+      .dock { position: absolute; left: clamp(16px, 4.4vw, 56px); bottom: 22px; display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; right: 24px; }
+      .laptop { background: none; border: 0; padding: 0; cursor: pointer; line-height: 0; position: relative; transition: transform 0.4s var(--ease), filter 0.4s; }
+      .laptop:hover { transform: translateY(-4px); filter: drop-shadow(0 6px 14px rgba(146, 208, 227, 0.35)); }
+      .laptop.on { filter: drop-shadow(0 0 14px rgba(146, 208, 227, 0.55)); }
+      .laptop small { position: absolute; left: 50%; bottom: -16px; translate: -50% 0; font: 10px "JetBrains Mono", monospace; letter-spacing: 0.08em; color: var(--muted); white-space: nowrap; }
+      .archbtn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(23 147 209 / 0.6); background: var(--overlay); backdrop-filter: blur(6px); display: grid; place-items: center; cursor: pointer; margin-bottom: 0; transition: box-shadow 0.4s, transform 0.4s var(--ease); }
+      .archbtn:hover { transform: translateY(-3px); box-shadow: 0 0 18px rgb(23 147 209 / 0.55); }
+      .archbtn svg { display: block; }
+      .chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 4px; }
+      .chip { font: inherit; font-size: 13px; color: var(--ink); background: var(--overlay); backdrop-filter: blur(6px); border: 1px solid rgb(246 239 226 / 0.35); border-radius: 99px; height: 40px; padding: 0 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background 0.25s, border-color 0.25s, color 0.25s; }
+      .chip.tour { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.06em; border-color: var(--accent); color: var(--accent); }
+      .chip.tour.on { color: #1a1530; }
+      .chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); }
+      .chip:hover { border-color: var(--accent); }
+      .chip.on { background: var(--accent); color: #1a1530; border-color: var(--accent); }
+      .chip.on i { box-shadow: none; }
+      .hint { position: absolute; right: clamp(16px, 4.4vw, 56px); bottom: 26px; padding: 6px 14px; border-radius: 99px; background: var(--overlay); backdrop-filter: blur(6px); color: var(--muted); font-size: 13px; letter-spacing: 0.04em; transition: opacity 0.8s; max-width: 46ch; text-align: center; }
+      .hint.gone { opacity: 0; }
+      .dev { z-index: 3; position: absolute; right: clamp(16px, 4.4vw, 56px); bottom: 104px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; font: 12px "JetBrains Mono", monospace; color: var(--muted); }
+      .dev label { display: flex; gap: 6px; align-items: center; cursor: pointer; background: var(--overlay); padding: 4px 10px; border-radius: 99px; }
+      .dev span { opacity: 0.8; }
+      .modes { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; margin-top: 8px; max-width: 460px; }
+      .modes button { font: inherit; font-size: 12px; color: var(--ink); background: var(--overlay); border: 1px solid rgb(246 239 226 / 0.3); border-radius: 99px; padding: 4px 12px; cursor: pointer; pointer-events: auto; }
+      .modes button.on { background: var(--accent); color: #1a1530; border-color: var(--accent); }
+      .explain { max-width: 360px; margin: 2px 0 0; text-align: right; font: 12px/1.45 'Instrument Sans', sans-serif; color: var(--muted); background: var(--overlay); padding: 8px 12px; border-radius: 10px; backdrop-filter: blur(6px); }
+      .bar { position: absolute; left: 1.2%; right: 1.2%; top: 14px; height: 36px; border-radius: 8px; background: rgb(25 28 29 / 0.92); display: flex; align-items: center; gap: 10px; padding: 0 14px; font: 12px "JetBrains Mono", monospace; color: #92d0e3; opacity: 0; transition: opacity 0.6s; pointer-events: none; }
+      .bar i { width: 9px; height: 9px; border-radius: 50%; background: #2a2f31; } .bar i.a { background: #92d0e3; }
+      .bar span:last-child { margin-left: auto; color: #8a9a9e; }
+      .grid .bar { opacity: 1; } .grid .head { opacity: 0; pointer-events: none; }
+      .lb { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgb(8 9 20 / 0.86); opacity: 0; visibility: hidden; transition: opacity 0.35s, visibility 0.35s; }
+      .lb.open { opacity: 1; visibility: visible; }
+      .lb img { max-width: 82vw; max-height: 84vh; border-radius: 12px; transform: scale(0.95); transition: transform 0.6s var(--ease); }
+      .lb.open img { transform: none; }
+      .label { position: absolute; transform: translate(-50%, -50%); font: 500 13px "JetBrains Mono", monospace; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); text-shadow: 0 0 8px #0b0d1c, 0 0 18px #0b0d1c; padding: 3px 10px; border: 0; background: none; cursor: pointer; pointer-events: auto; transition: opacity 0.5s; white-space: nowrap; }
+      .label small { display: block; text-align: center; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="gl"></canvas>
+      <div class="hud" id="hud">
+        <div class="head">
+          <span id="crow"></span>
+          <div>
+            <p class="eyebrow">Remembering</p>
+            <h1 class="name">Javier Pérez @kaucrow</h1>
+            <p class="years">2005 – 2026</p>
+          </div>
+        </div>
+        <div class="bar"><i class="a"></i><i></i><i></i><i></i><i></i><span>kaucrow · 2005 – 2026</span><span id="barpos"></span></div>
+        <div id="labels"></div>
+        <div class="dev">
+          <label><input type="checkbox" id="rm" /> simulate reduced motion</label>
+          <span>Esc back · 1–5 zones · G overview · Space journey</span>
+          <div class="modes" id="modes" role="group" aria-label="How zones are defined"></div>
+          <p class="explain" id="explain"></p>
+        </div>
+        <div class="dock">
+          <button class="laptop" id="laptop" aria-label="Open the overview grid" title="Overview grid (G)"><span id="laptopsvg"></span><small id="laptoplbl">overview</small></button>
+          <button class="archbtn" id="archbtn" aria-label="Back to the whole sky" title="The whole sky (Esc)"><span id="archsvg"></span></button>
+          <button class="chip tour" id="tour" aria-label="Take the guided journey (Space)" title="Guided journey (Space)">▶ Journey</button>
+          <div class="chips" id="chips"></div>
+        </div>
+        <p class="hint" id="hint">Move the mouse to look around · Click a zone to bring it closer</p>
+      </div>
+    </div>
+    <div class="lb" id="lb"><img alt="" /></div>
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>
