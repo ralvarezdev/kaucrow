@@ -2,22 +2,11 @@
  * An open ThinkPad on a 43×47 grid, one character per pixel: G edge, K black plastic, S screen, B bar,
  * C bar accent, A Arch blue, W wordmark, R ThinkPad red, Y key, T trackpad. '.' is empty.
  */
+import { ROWS as ARCH } from '../Arch/pixels'
+
 export const GRID = { width: 43, height: 47 } as const
 
 export type Pixel = 'G' | 'K' | 'S' | 'B' | 'C' | 'A' | 'W' | 'R' | 'Y' | 'T'
-
-/** The Arch Linux logo, 9×9. */
-const ARCH: readonly string[] = [
-  '....A....',
-  '...AAA...',
-  '...AAA...',
-  '..AAAAA..',
-  '..AAAAA..',
-  '.AAA.AAA.',
-  '.AA...AA.',
-  'AA.....AA',
-  'A.......A',
-]
 
 /** "ThinkPad" in a 3×5 face; the dot of the i is the red one. */
 const WORDMARK: readonly (readonly string[])[] = [

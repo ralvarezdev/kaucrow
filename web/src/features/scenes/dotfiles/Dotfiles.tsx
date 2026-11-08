@@ -1,4 +1,4 @@
-import { Laptop } from '@/components/Laptop'
+import { ThinkPad } from '@/components/ThinkPad'
 import { PhotoFrame } from '../shared/PhotoFrame'
 import { SceneCanvas } from '../shared/SceneCanvas'
 import { STAGE } from '../shared/units'
@@ -58,7 +58,7 @@ export function Dotfiles() {
       <SceneCanvas background={DOTFILES_COLORS.background} cameraZ={CAMERA_Z} entrance="pop">
         <Windows />
       </SceneCanvas>
-      <Laptop className={styles.laptop} />
+      <ThinkPad className={styles.thinkpad} />
     </>
   )
 }

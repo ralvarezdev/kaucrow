@@ -1,5 +1,5 @@
 /* Sits in the empty strip under the windows, above the hint; the crab walks below it. */
-.laptop {
+.thinkpad {
   position: absolute;
   right: var(--gutter);
   bottom: 68px;
@@ -10,7 +10,7 @@
 }
 
 @media (max-height: 520px) {
-  .laptop {
+  .thinkpad {
     display: none;
   }
 }

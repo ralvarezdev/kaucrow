@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { GRID, ROWS } from './pixels'
 
-describe('laptop pixels', () => {
+describe('thinkpad pixels', () => {
   it('fits the grid with known characters', () => {
     expect(ROWS).toHaveLength(GRID.height)
     for (const row of ROWS) {

@@ -1,0 +1,9 @@
+.arch {
+  display: block;
+  overflow: visible;
+}
+
+/* Arch's own blue, unless the caller sets --arch-blue. */
+.logo {
+  fill: var(--arch-blue, #1793d1);
+}

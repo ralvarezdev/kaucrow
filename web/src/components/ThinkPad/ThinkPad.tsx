@@ -1,9 +1,9 @@
 import { cx } from '@/lib/cx'
 import { gridPaths } from '@/lib/gridPaths'
-import styles from './Laptop.module.css'
 import { GRID, type Pixel, ROWS } from './pixels'
+import styles from './ThinkPad.module.css'
 
-export type LaptopProps = {
+export type ThinkPadProps = {
   /** Width in px. Use a multiple of 43 to keep every pixel crisp. */
   size?: number
   className?: string | undefined
@@ -25,10 +25,10 @@ const COLOR_CLASS: Record<Pixel, string> = {
 const PATHS = gridPaths<Pixel>(ROWS)
 
 /** An open ThinkPad running Arch, as pixel art. Decorative: hidden from assistive tech. */
-export function Laptop({ size = 86, className }: LaptopProps) {
+export function ThinkPad({ size = 86, className }: ThinkPadProps) {
   return (
     <svg
-      className={cx(styles.laptop, className)}
+      className={cx(styles.thinkpad, className)}
       viewBox={`0 0 ${GRID.width} ${GRID.height}`}
       width={size}
       height={(size * GRID.height) / GRID.width}
