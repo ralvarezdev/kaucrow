@@ -1,23 +1,22 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui'
 import styles from './RadioWidget.module.css'
+import { usePanelOpen } from './usePanelOpen'
 
 export const RADIO_URL = 'https://radio.kaucrow.dev'
 
 /**
  * Javier's songs, played by the radio at radio.kaucrow.dev in an iframe.
- * Nothing loads until the visitor opens it, so it never plays on its own. After
- * the first open the frame stays mounted (just hidden), so closing the panel
- * does not cut the music.
+ * The panel starts open on wide screens (and remembers if the visitor closed or
+ * opened it), but the radio itself never plays on its own: browsers block it and
+ * the visitor presses play. After the first open the frame stays mounted (just
+ * hidden), so closing the panel does not cut the music.
  */
 export function RadioWidget() {
-  const [open, setOpen] = useState(false)
-  const [loaded, setLoaded] = useState(false)
-
-  function toggle() {
-    setOpen((o) => !o)
-    setLoaded(true)
-  }
+  const { open, toggle } = usePanelOpen()
+  // Mounted once opened and kept, so closing the panel does not cut the music.
+  const [loaded, setLoaded] = useState(open)
+  if (open && !loaded) setLoaded(true)
 
   return (
     <aside className={styles.radio} aria-label="Radio">
