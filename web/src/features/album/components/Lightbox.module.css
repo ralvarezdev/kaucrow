@@ -13,13 +13,46 @@
   outline: none;
 }
 
+/*
+ * Opens and closes with a fade. `display` and `overlay` are discrete, so they
+ * are transitioned too (allow-discrete) to keep the dialog on screen while it
+ * fades out; @starting-style gives the fade-in its starting point.
+ */
+.lightbox {
+  opacity: 0;
+  transition:
+    opacity var(--duration-base) ease,
+    display var(--duration-base) allow-discrete,
+    overlay var(--duration-base) allow-discrete;
+}
+
 .lightbox[open] {
   display: grid;
   place-items: center;
+  opacity: 1;
 }
 
 .lightbox::backdrop {
   background: var(--color-scrim);
+  opacity: 0;
+  transition:
+    opacity var(--duration-base) ease,
+    display var(--duration-base) allow-discrete,
+    overlay var(--duration-base) allow-discrete;
+}
+
+.lightbox[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .lightbox[open] {
+    opacity: 0;
+  }
+
+  .lightbox[open]::backdrop {
+    opacity: 0;
+  }
 }
 
 .figure {
@@ -28,6 +61,64 @@
   align-items: center;
   gap: var(--space-3);
   margin: 0;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+/* The photo settles in from slightly smaller, and leaves the same way. */
+.lightbox:not([open]) .figure {
+  transform: scale(0.95) translateY(8px);
+}
+
+@starting-style {
+  .lightbox[open] .figure {
+    transform: scale(0.95) translateY(8px);
+  }
+}
+
+/* Stepping: the next photo slides in from the side the arrow points to. */
+.fromRight {
+  animation: slide-in var(--duration-slow) var(--ease-out);
+  --from: 46px;
+}
+
+.fromLeft {
+  animation: slide-in var(--duration-slow) var(--ease-out);
+  --from: -46px;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    translate: var(--from) 0;
+  }
+}
+
+.picture {
+  display: grid;
+  place-items: center;
+}
+
+.picture > * {
+  grid-area: 1 / 1;
+}
+
+.preview {
+  filter: blur(16px);
+  scale: 1.02;
+}
+
+.loading {
+  opacity: 0;
+}
+
+.loaded {
+  animation: fade-in var(--duration-slow) var(--ease-out);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
 }
 
 .image {
@@ -63,4 +154,16 @@
 
 .next {
   right: var(--space-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figure,
+  .lightbox:not([open]) .figure {
+    transform: none;
+  }
+
+  .fromRight,
+  .fromLeft {
+    animation: fade-in var(--duration-base) ease;
+  }
 }
