@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>kaucrow — whole-gallery view proposals (preview)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" />
+<style>
+*{box-sizing:border-box}
+:root{--ease:cubic-bezier(.22,1,.36,1);--ink:#f6efe2;--muted:#b9b7cc;--accent:#f2d9a6;--panel:#171a36}
+body{margin:0;background:#07080f;color:var(--ink);font:15px/1.5 "Instrument Sans",system-ui,sans-serif}
+header.top{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:12px 24px;background:rgb(7 8 15/.94);backdrop-filter:blur(8px);border-bottom:1px solid #ffffff1a}
+header.top h1{margin:0;font:500 15px "JetBrains Mono",monospace}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{font:inherit;font-size:13px;color:var(--muted);background:none;border:1px solid #ffffff26;border-radius:99px;padding:5px 13px;cursor:pointer}
+nav button:hover{color:var(--ink);border-color:var(--accent)}
+nav button.on{background:var(--accent);color:#1a1530;border-color:var(--accent)}
+nav button b{font-weight:500;margin-right:5px}
+main{max-width:1180px;margin:0 auto;padding:20px 24px 60px}
+.intro{color:var(--muted);max-width:80ch;margin:6px 0 18px}
+.intro b{color:var(--ink)}
+.panel{display:none}.panel.on{display:block}
+.panel h2{margin:0 0 2px;font:500 21px "JetBrains Mono",monospace;color:var(--accent)}
+.panel h2 span{font-size:12px;border:1px solid var(--accent);border-radius:99px;padding:1px 9px;margin-left:10px;vertical-align:middle}
+.panel>p{margin:2px 0 10px;color:var(--muted);max-width:90ch}
+.try{font:12.5px "JetBrains Mono",monospace;color:#8f8ca8;margin:0 0 10px}
+.stage{position:relative;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:#0b0d1c;user-select:none;touch-action:none;isolation:isolate}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:760px){.cols{grid-template-columns:1fr}}
+.cols div{background:var(--panel);border:1px solid #ffffff1a;border-radius:10px;padding:10px 14px;font-size:13px;color:var(--muted)}
+.cols b{color:var(--ink);display:block;margin-bottom:2px;font:500 12px "JetBrains Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
+.replay{position:absolute;right:10px;top:10px;z-index:20;font:12px "JetBrains Mono",monospace;color:var(--ink);background:#000a;border:1px solid #fff4;border-radius:99px;padding:3px 11px;cursor:pointer}
+.tag{position:absolute;left:10px;bottom:10px;z-index:20;font:11.5px "JetBrains Mono",monospace;color:#ddd;background:#000a;border-radius:99px;padding:3px 10px;pointer-events:none}
+.star{position:absolute;border-radius:50%;background:#fff}
+.world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.world.fly{transition:transform 1.1s var(--ease)}
+.ph{position:absolute;cursor:pointer}
+.ph img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
+/* constellation */
+.cf .ph{background:#f1ece0;padding:4px;border-radius:5px;translate:calc(var(--mx,0)*var(--dd)) calc(var(--my,0)*var(--dd));transition:scale .6s var(--ease),opacity .6s,filter .6s,box-shadow .6s}
+.cf .ph.on{scale:1.45;z-index:9;box-shadow:0 0 50px 8px rgba(242,217,166,.45);opacity:1!important;filter:none!important}
+.cf svg{position:absolute;left:0;top:0;pointer-events:none}
+.cf svg line{stroke:rgba(242,217,166,.28);stroke-width:1.2;stroke-dasharray:3 6}
+/* sphere */
+.sph{perspective:1300px;cursor:grab}
+.sph:active{cursor:grabbing}
+.globe{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.sph .ph{left:-55px;top:-66px;width:110px;height:132px;padding:3px;background:#f1ece0;border-radius:4px;backface-visibility:hidden;transform:rotateY(var(--lon)) rotateX(var(--lat)) translateZ(var(--r,300px));transition:transform .9s var(--ease),box-shadow .4s;box-shadow:0 0 0 1px #0004}
+.sph .ph:hover{box-shadow:0 0 22px 4px rgba(242,217,166,.5)}
+.sph .ph.sel{--r:520px;z-index:5}
+/* grid */
+.wm{background:#111415;font-family:"JetBrains Mono",monospace}
+.bar{position:absolute;left:1.2%;right:1.2%;top:1.5%;height:6.5%;border-radius:8px;background:#191c1d;display:flex;align-items:center;gap:10px;padding:0 12px;font-size:11.5px;color:#92d0e3}
+.bar i{width:9px;height:9px;border-radius:50%;background:#2a2f31}.bar i.a{background:#92d0e3}
+.bar span:last-child{margin-left:auto;color:#8a9a9e}
+.tiles{position:absolute;left:1.2%;right:1.2%;top:10%;bottom:1.5%;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(5,1fr);gap:7px}
+.tile{position:relative;border-radius:8px;padding:2px;background:#2b3032;cursor:pointer;transition:background .25s,transform .35s var(--ease),opacity .6s}
+.tile>div{width:100%;height:100%;border-radius:6px;overflow:hidden;background:#191c1d}
+.tile img{width:100%;height:100%;object-fit:cover;display:block;opacity:.72;transition:opacity .25s}
+.tile.on{background:linear-gradient(135deg,#92d0e3,#7aa2f7 55%,#bb9af7);transform:scale(1.07);z-index:3}
+.tile.on img{opacity:1}
+.hintbar{position:absolute;left:0;right:0;bottom:6px;text-align:center;font-size:11px;color:#6d7b7f;pointer-events:none}
+/* corridor */
+.hall3d{perspective:760px;background:#0d0906;cursor:ns-resize}
+.hall{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.wall{position:absolute;width:7000px;height:420px;left:-3500px;top:-210px;background:linear-gradient(#2a1c12,#4a3524 50%,#2a1c12)}
+.plane{position:absolute;left:-300px;width:600px;height:7000px;background:linear-gradient(#1a110b,#3a281c)}
+.fr{position:absolute;left:-85px;top:-105px;width:170px;height:210px;padding:9px;background:#3a2412;border-radius:2px;box-shadow:0 0 0 1px #0006;cursor:pointer}
+.fr>div{width:100%;height:100%;background:#f3e3c3;padding:10px}
+.fr img{width:100%;height:100%;object-fit:cover;display:block}
+.fr:hover{filter:brightness(1.18)}
+.prog{position:absolute;left:14%;right:14%;bottom:12px;height:3px;background:#fff2;border-radius:3px;pointer-events:none}.prog i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:3px}
+.fog{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 20%,rgba(13,9,6,.75) 85%);pointer-events:none}
+/* table */
+.tbl{background:#cdba9a;cursor:grab}
+.tbl .grain{position:absolute;inset:0;background:repeating-linear-gradient(95deg,rgba(80,55,30,.06) 0 3px,transparent 3px 11px),radial-gradient(ellipse at 40% 30%,rgba(255,240,210,.45),transparent 62%);pointer-events:none}
+.tbl .ph{background:#fbf8f1;padding:7px 7px 24px;border-radius:2px;box-shadow:0 5px 12px #0004;transition:transform .5s var(--ease),box-shadow .5s;transform:rotate(var(--r))}
+.tbl .ph:hover{transform:rotate(var(--r)) translateY(-8px) scale(1.06);box-shadow:0 18px 26px #0006}
+.tbl .ph.on{transform:rotate(0deg) scale(1.5);z-index:9999;box-shadow:0 24px 40px #0007}
+/* glass */
+.glass{background:#0b0d1c;cursor:crosshair}
+.glass canvas{position:absolute}
+.glass .zoomer{position:absolute;inset:0;transform-origin:0 0}
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:rgb(8 9 20/.85);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+.lb.open{opacity:1;visibility:visible}
+.lb img{max-width:82vw;max-height:84vh;border-radius:12px;transform:scale(.95);transition:transform .6s var(--ease)}
+.lb.open img{transform:none}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>kaucrow · whole-gallery view</h1>
+  <nav id="tabs"></nav>
+</header>
+<main>
+<p class="intro">Six ways to show <b>the entire gallery</b> as the one view on the page (the scene dropdown goes away; the other scenes stay in the code). These are <b>DOM / canvas stand-ins with all 50 real photos</b>, not the final three.js scenes — they show composition and interaction. Pick a tab, then try the line under its title. Click any photo to open it larger.</p>
+<div id="panels"></div>
+</main>
+<div class="lb" id="lb"><img alt="" /></div>
+
+<script>
+const ROWS=[[15,19,24],[16,18,26],[17,17,27],[18,16,28],[19,16,29],[20,16,30],[21,13,15],[21,17,31],[22,12,31],[23,11,32],[24,21,30],[24,33,33],[25,22,29],[25,31,34],[26,22,34],[27,22,27],[27,29,35],[28,22,26],[28,28,36],[29,22,26],[29,28,36],[30,22,26],[30,28,37],[31,22,26],[31,28,37],[32,22,26],[32,28,28],[32,30,38],[33,21,26],[33,28,28],[33,30,38],[34,21,26],[34,28,29],[34,31,39],[35,21,27],[35,29,39],[35,41,41],[36,21,28],[36,30,31],[36,33,40],[37,21,29],[37,31,32],[37,34,39],[38,21,30],[38,32,38],[39,21,31],[39,33,37],[40,21,32],[40,34,36],[41,21,33],[41,35,35],[42,21,33],[43,21,31],[44,21,28]];
+const NUMS=Array.from({length:52},(_,i)=>i+1).filter(n=>n!==20&&n!==21);
+const pad=n=>String(n).padStart(4,'0');
+const thumb=n=>`../../web/public/photos/thumb/javier-${pad(n)}.webp`;
+const full=n=>`../../web/public/photos/javier-${pad(n)}.webp`;
+const rng=(a=1)=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const $=(s,r=document)=>r.querySelector(s);
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+
+/* lightbox */
+const lb=$('#lb'),lbi=$('img',lb);
+const openPhoto=n=>{lbi.src=full(n);lb.classList.add('open')};
+lb.onclick=()=>lb.classList.remove('open');
+addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('open')});
+
+/* pan + zoom engine shared by the sky, the table and the glass crow */
+function panzoom(stage,world,{min=.3,max=4,fit}){
+  const s={x:0,y:0,k:1};let drag=null,moved=0;
+  const apply=()=>{world.style.transform=`translate(${s.x}px,${s.y}px) scale(${s.k})`};
+  const free=()=>world.classList.remove('fly');
+  const api={s,apply,
+    fit(animate){const f=fit(stage.clientWidth,stage.clientHeight);if(animate)world.classList.add('fly');Object.assign(s,f);apply()},
+    flyTo(wx,wy,k,animate=true){const w=stage.clientWidth,h=stage.clientHeight;if(animate)world.classList.add('fly');s.k=k;s.x=w/2-wx*k;s.y=h/2-wy*k;apply()},
+    get moved(){return moved>5}};
+  stage.addEventListener('wheel',e=>{e.preventDefault();free();const r=stage.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top;const k=clamp(s.k*Math.exp(-e.deltaY*.0016),min,max);s.x=px-(px-s.x)*(k/s.k);s.y=py-(py-s.y)*(k/s.k);s.k=k;apply()},{passive:false});
+  stage.addEventListener('pointerdown',e=>{if(e.target.closest('.replay'))return;drag={x:e.clientX,y:e.clientY,sx:s.x,sy:s.y};moved=0;free()});
+  addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;moved=Math.max(moved,Math.hypot(dx,dy));s.x=drag.sx+dx;s.y=drag.sy+dy;apply()});
+  addEventListener('pointerup',()=>{drag=null;setTimeout(()=>{moved=0},0)});
+  return api}
+
+const mk=(h)=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstChild};
+const stars=(n,seed,w,h)=>{const r=rng(seed);let o='';for(let i=0;i<n;i++){const z=r()*2+1;o+=`<i class="star" style="left:${r()*w}px;top:${r()*h}px;width:${z}px;height:${z}px;opacity:${.3+r()*.7}"></i>`}return o};
+
+/* ================= 1 · constellation field ================= */
+function mountCF(st){
+  st.innerHTML='';st.classList.add('cf');
+  const W=2400,H=1500,world=mk(`<div class="world" style="width:${W}px;height:${H}px"></div>`);st.appendChild(world);
+  const r=rng(11);let html=stars(220,5,W,H);const pts=[];
+  const cols=10,rows=5;
+  NUMS.forEach((n,i)=>{const c=i%cols,ro=Math.floor(i/cols);const d=r();const w=80+d*100;const h=w*(1+r()*.25);
+    const x=(c+.5)*(W/cols)+(r()-.5)*110-w/2,y=(ro+.5)*(H/rows)+(r()-.5)*130-h/2;pts.push({n,x,y,w,h,d,cx:x+w/2,cy:y+h/2});
+    html+=`<div class="ph" data-i="${i}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;opacity:${.5+d*.5};filter:blur(${(1-d)*1.4}px);--dd:${(d-.5)*34}px;transform:rotate(${(r()-.5)*10}deg)"><img src="${thumb(n)}" alt=""></div>`});
+  let lines='';pts.forEach((p,i)=>{const near=pts.map((q,j)=>({j,d:Math.hypot(p.cx-q.cx,p.cy-q.cy)})).filter(o=>o.j!==i).sort((a,b)=>a.d-b.d).slice(0,2);near.forEach(o=>{if(o.j>i)lines+=`<line x1="${p.cx}" y1="${p.cy}" x2="${pts[o.j].cx}" y2="${pts[o.j].cy}"/>`})});
+  world.innerHTML=`<svg width="${W}" height="${H}">${lines}</svg>`+html;
+  const pz=panzoom(st,world,{min:.25,max:3.2,fit:(w,h)=>{const k=Math.min(w/W,h/H)*1.0;return{k,x:(w-W*k)/2,y:(h-H*k)/2}}});
+  pz.fit(false);let focus=null;
+  st.addEventListener('pointermove',e=>{const r=st.getBoundingClientRect();world.style.setProperty('--mx',((e.clientX-r.left)/r.width-.5)*2);world.style.setProperty('--my',((e.clientY-r.top)/r.height-.5)*2)});
+  const unfocus=()=>{if(focus!==null){$(`.ph[data-i="${focus}"]`,world).classList.remove('on');focus=null}};
+  st.addEventListener('click',e=>{if(pz.moved)return;const el=e.target.closest('.ph');
+    if(!el){unfocus();pz.fit(true);return}
+    const i=+el.dataset.i;if(focus===i){openPhoto(pts[i].n);return}
+    unfocus();focus=i;el.classList.add('on');pz.flyTo(pts[i].cx,pts[i].cy,Math.min(3,420/pts[i].w))});
+  st.insertAdjacentHTML('beforeend','<span class="tag">drag · wheel zoom · click flies in · click again opens</span>');
+}
+
+/* ================= 2 · memory sphere ================= */
+function mountSphere(st){
+  const gen=st._gen=(st._gen||0)+1;st.innerHTML='';st.classList.add('sph');
+  const globe=mk('<div class="globe"></div>');st.appendChild(globe);
+  st.insertAdjacentHTML('afterbegin',stars(90,9,1200,760).replace(/left:(\d+)/g,(m,a)=>`left:${a/12}%`).replace(/top:(\d+)/g,(m,a)=>`top:${a/7.6}%`).replace(/px;opacity/g,'px;opacity'));
+  const N=NUMS.length,R=Math.min(st.clientHeight*.47,330);st.style.setProperty('--r',R+'px');
+  const pos=[];
+  NUMS.forEach((n,i)=>{const y=1-(i/(N-1))*2,lat=Math.asin(y)*180/Math.PI,lon=(i*137.508)%360;pos.push({n,lat,lon});
+    globe.appendChild(mk(`<div class="ph" data-i="${i}" style="--lat:${-lat}deg;--lon:${lon}deg;--r:${R}px"><img src="${thumb(n)}" alt=""></div>`))});
+  let rx=-12,ry=0,vx=0,vy=.12,target=null,sel=null,drag=null,moved=0,idle=true;
+  const draw=()=>{globe.style.transform=`translateZ(${-R*0.4}px) rotateX(${rx}deg) rotateY(${ry}deg)`};
+  const norm=a=>((a+540)%360)-180;
+  st.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};moved=0;target=null;vx=vy=0});
+  addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;moved+=Math.abs(dx)+Math.abs(dy);ry+=dx*.35;rx=clamp(rx-dy*.3,-80,80);vy=dx*.35;vx=0;drag.x=e.clientX;drag.y=e.clientY});
+  addEventListener('pointerup',()=>{drag=null;setTimeout(()=>moved=0,0)});
+  function unsel(){if(sel!==null){$(`.ph[data-i="${sel}"]`,globe).classList.remove('sel');sel=null}}
+  st.addEventListener('click',e=>{if(moved>6)return;const el=e.target.closest('.ph');
+    if(!el){unsel();return}const i=+el.dataset.i;
+    if(sel===i){openPhoto(pos[i].n);return}unsel();sel=i;el.classList.add('sel');target={rx:pos[i].lat,ry:-pos[i].lon}});
+  (function loop(){
+    if(st._gen!==gen)return;
+    if(target){ry+=norm(target.ry-ry)*.08;rx+=(target.rx-rx)*.08}
+    else if(!drag){ry+=vy;vy*=.985;if(Math.abs(vy)<.12&&sel===null)vy=.12}
+    draw();requestAnimationFrame(loop)})();
+  st.insertAdjacentHTML('beforeend','<span class="tag">drag to spin · click brings a photo forward · click again opens</span>');
+}
+
+/* ================= 3 · overview grid (Hyprland) ================= */
+function mountGrid(st){
+  const gen=st._gen=(st._gen||0)+1;st.innerHTML='';st.classList.add('wm');
+  st.insertAdjacentHTML('beforeend',`<div class="bar"><i class="a"></i><i></i><i></i><i></i><i></i><span>kaucrow · 2005 – 2026</span><span id="gpos"></span></div><div class="tiles"></div><div class="hintbar">h j k l / arrows move · enter opens · hover selects</div>`);
+  const tiles=$('.tiles',st),cols=10;let cur=24;
+  NUMS.forEach((n,i)=>tiles.appendChild(mk(`<div class="tile" data-i="${i}" style="opacity:0"><div><img src="${thumb(n)}" alt=""></div></div>`)));
+  const els=[...tiles.children];
+  els.forEach((t,i)=>setTimeout(()=>t.style.opacity=1,40+i*22));
+  const set=i=>{cur=clamp(i,0,NUMS.length-1);els.forEach((t,j)=>t.classList.toggle('on',j===cur));$('#gpos',st).textContent=`${cur+1}/${NUMS.length}`};set(cur);
+  tiles.onpointermove=e=>{const t=e.target.closest('.tile');if(t&&+t.dataset.i!==cur)set(+t.dataset.i)};
+  tiles.onclick=e=>{const t=e.target.closest('.tile');if(t)openPhoto(NUMS[+t.dataset.i])};
+  const key=e=>{if(st._gen!==gen||!st.offsetParent)return;if(lb.classList.contains('open'))return;
+    const m={ArrowRight:1,l:1,ArrowLeft:-1,h:-1,ArrowDown:cols,j:cols,ArrowUp:-cols,k:-cols}[e.key];
+    if(m){e.preventDefault();set(cur+m)}else if(e.key==='Enter')openPhoto(NUMS[cur])};
+  addEventListener('keydown',key);
+}
+
+/* ================= 4 · gallery corridor ================= */
+function mountHall(st){
+  const gen=st._gen=(st._gen||0)+1;st.innerHTML='';st.classList.add('hall3d');
+  const hall=mk('<div class="hall"></div>');st.appendChild(hall);
+  const HW=300,STEP=250,START=-380,frames=[];
+  hall.appendChild(mk(`<div class="wall" style="transform:translate3d(${-HW}px,0,-3000px) rotateY(90deg)"></div>`));
+  hall.appendChild(mk(`<div class="wall" style="transform:translate3d(${HW}px,0,-3000px) rotateY(-90deg)"></div>`));
+  hall.appendChild(mk(`<div class="plane" style="top:210px;transform:rotateX(-90deg);transform-origin:50% 0"></div>`));
+  hall.appendChild(mk(`<div class="plane" style="top:-210px;transform:rotateX(-90deg);transform-origin:50% 0;background:linear-gradient(#0b0705,#1c120b)"></div>`));
+  NUMS.forEach((n,i)=>{const side=i%2?1:-1,z=START-Math.floor(i/2)*STEP;
+    const el=mk(`<div class="fr" style="transform:translate3d(${side*(HW-2)}px,0,${z}px) rotateY(${-side*90}deg)"><div><img src="${thumb(n)}" alt=""></div></div>`);
+    el.onclick=()=>{if(moved<6)openPhoto(n)};hall.appendChild(el);frames.push({el,z})});
+  st.insertAdjacentHTML('beforeend','<div class="fog"></div><div class="prog"><i></i></div><span class="tag">wheel / ↑ ↓ / drag to walk · click a frame to open</span>');
+  const END=-(START-Math.floor((NUMS.length-1)/2)*STEP)+300;let pos=0,goal=0,moved=0,drag=null;
+  const draw=()=>{hall.style.transform=`translateZ(${pos}px)`;$('.prog i',st).style.width=clamp(pos/END,0,1)*100+'%';
+    frames.forEach(f=>{const d=f.z+pos;f.el.style.opacity=d>-60?clamp(1-(d+60)/220,0,1):clamp(1-(-d-300)/2100,0,1)})};
+  st.addEventListener('wheel',e=>{e.preventDefault();goal=clamp(goal+e.deltaY*.9,0,END)},{passive:false});
+  st.addEventListener('pointerdown',e=>{drag={y:e.clientY};moved=0});
+  addEventListener('pointermove',e=>{if(!drag)return;const dy=drag.y-e.clientY;moved+=Math.abs(dy);goal=clamp(goal+dy*2.2,0,END);drag.y=e.clientY});
+  addEventListener('pointerup',()=>{drag=null;setTimeout(()=>moved=0,0)});
+  addEventListener('keydown',e=>{if(st._gen!==gen||!st.offsetParent)return;if(e.key==='ArrowDown'||e.key==='ArrowRight')goal=clamp(goal+STEP,0,END);if(e.key==='ArrowUp'||e.key==='ArrowLeft')goal=clamp(goal-STEP,0,END)});
+  (function loop(){if(st._gen!==gen)return;pos+=(goal-pos)*.08;draw();requestAnimationFrame(loop)})();
+  goal=0;setTimeout(()=>{goal=STEP*1.6},300);
+}
+
+/* ================= 5 · pile on the table ================= */
+function mountTable(st){
+  st.innerHTML='';st.classList.add('tbl');
+  const W=2200,H=1400,world=mk(`<div class="world" style="width:${W}px;height:${H}px"></div>`);st.appendChild(world);
+  st.insertAdjacentHTML('afterbegin','<div class="grain"></div>');
+  const r=rng(23);let html='';let top=10;
+  NUMS.forEach((n,i)=>{const w=190+r()*60,h=w*1.18+24;const x=60+r()*(W-w-120),y=40+r()*(H-h-80);
+    html+=`<div class="ph" data-i="${i}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;--r:${(r()-.5)*26}deg;z-index:${i}"><img src="${thumb(n)}" alt="" style="height:calc(100% - 0px)"></div>`});
+  world.innerHTML=html;
+  const pz=panzoom(st,world,{min:.2,max:3,fit:(w,h)=>{const k=Math.min(w/W,h/H);return{k,x:(w-W*k)/2,y:(h-H*k)/2}}});pz.fit(false);
+  let focus=null;const unfocus=()=>{if(focus!==null){const e=$(`.ph[data-i="${focus}"]`,world);e&&e.classList.remove('on');focus=null}};
+  st.addEventListener('click',e=>{if(pz.moved)return;const el=e.target.closest('.ph');if(!el){unfocus();pz.fit(true);return}
+    const i=+el.dataset.i;if(focus===i){openPhoto(NUMS[i]);return}unfocus();focus=i;el.classList.add('on');
+    const x=parseFloat(el.style.left)+parseFloat(el.style.width)/2,y=parseFloat(el.style.top)+parseFloat(el.style.height)/2;pz.flyTo(x,y,Math.min(2.4,430/parseFloat(el.style.width)))});
+  st.insertAdjacentHTML('beforeend','<span class="tag">drag to pan · wheel zoom · hover lifts · click picks up · click again opens</span>');
+}
+
+/* ================= 6 · stained-glass crow ================= */
+function mountGlass(st){
+  st.innerHTML='';st.classList.add('glass');
+  st.insertAdjacentHTML('beforeend','<div class="tag" style="z-index:30">cutting the crow…</div>');
+  const S=7;                                           // label pixels per sprite pixel
+  const x0=Math.min(...ROWS.map(r=>r[1])),x1=Math.max(...ROWS.map(r=>r[2]))+1,y0=Math.min(...ROWS.map(r=>r[0])),y1=Math.max(...ROWS.map(r=>r[0]))+1;
+  const GW=(x1-x0)*S,GH=(y1-y0)*S,mask=new Uint8Array(GW*GH);
+  ROWS.forEach(([y,a,b])=>{for(let yy=(y-y0)*S;yy<(y-y0+1)*S;yy++)for(let xx=(a-x0)*S;xx<(b+1-x0)*S;xx++)mask[yy*GW+xx]=1});
+  // Round the blocky sprite edges: blur the mask, then keep what is still more than half covered.
+  {const rad=Math.round(S*.9);let a=Float32Array.from(mask),b=new Float32Array(a.length);
+   for(let pass=0;pass<2;pass++){
+     for(let y=0;y<GH;y++){let acc=0;for(let x=-rad;x<=rad;x++)acc+=a[y*GW+clamp(x,0,GW-1)];for(let x=0;x<GW;x++){b[y*GW+x]=acc/(2*rad+1);acc+=a[y*GW+clamp(x+rad+1,0,GW-1)]-a[y*GW+clamp(x-rad,0,GW-1)]}}
+     for(let x=0;x<GW;x++){let acc=0;for(let y=-rad;y<=rad;y++)acc+=b[clamp(y,0,GH-1)*GW+x];for(let y=0;y<GH;y++){a[y*GW+x]=acc/(2*rad+1);acc+=b[clamp(y+rad+1,0,GH-1)*GW+x]-b[clamp(y-rad,0,GH-1)*GW+x]}}}
+   for(let i=0;i<mask.length;i++)mask[i]=a[i]>.5?1:0}
+  const pix=[];for(let i=0;i<mask.length;i++)if(mask[i])pix.push(i);
+  const N=NUMS.length,r=rng(5);let seeds=Array.from({length:N},()=>{const p=pix[Math.floor(r()*pix.length)];return[p%GW,Math.floor(p/GW)]});
+  const label=new Int16Array(GW*GH).fill(-1);
+  for(let it=0;it<14;it++){const sx=new Float64Array(N),sy=new Float64Array(N),c=new Float64Array(N);
+    for(const p of pix){const x=p%GW,y=(p/GW)|0;let b=0,bd=1e9;for(let k=0;k<N;k++){const d=(x-seeds[k][0])**2+(y-seeds[k][1])**2;if(d<bd){bd=d;b=k}}label[p]=b;sx[b]+=x;sy[b]+=y;c[b]++}
+    seeds=seeds.map((s,k)=>c[k]?[sx[k]/c[k],sy[k]/c[k]]:s)}
+  const PX=Math.floor(2400/GW);                          // output pixels per label pixel
+  const cw=GW*PX,ch=GH*PX;
+  const cells=Array.from({length:N},()=>({minx:1e9,miny:1e9,maxx:0,maxy:0,px:[],sx:0,sy:0}));
+  for(const p of pix){const k=label[p],c=cells[k],x=p%GW,y=(p/GW)|0;c.px.push(p);c.minx=Math.min(c.minx,x);c.maxx=Math.max(c.maxx,x);c.miny=Math.min(c.miny,y);c.maxy=Math.max(c.maxy,y);c.sx+=x;c.sy+=y}
+  const canvas=document.createElement('canvas');canvas.width=cw;canvas.height=ch;
+  const zoomer=mk('<div class="zoomer"></div>');st.appendChild(zoomer);zoomer.appendChild(canvas);
+  canvas.style.cssText=`position:absolute;left:0;top:0;width:${100}%;height:100%;translate:none`;
+  const ctx=canvas.getContext('2d');
+  // order cells by their position so they develop in a sweep across the crow
+  const order=cells.map((c,i)=>i).sort((a,b)=>(cells[a].sx/cells[a].px.length)-(cells[b].sx/cells[b].px.length));
+  const imgs=NUMS.map(n=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=thumb(n)}));
+  Promise.all(imgs).then(ims=>{
+    $('.tag',st).textContent='drag · wheel zoom · hover lifts a piece · click opens';
+    const off=cells.map((c,k)=>{const bw=(c.maxx-c.minx+1)*PX,bh=(c.maxy-c.miny+1)*PX,o=document.createElement('canvas');o.width=bw;o.height=bh;const g=o.getContext('2d');
+      g.beginPath();for(const p of c.px){g.rect(((p%GW)-c.minx)*PX,(((p/GW)|0)-c.miny)*PX,PX,PX)}g.clip();
+      const im=ims[k];if(im){const sc=Math.max(bw/im.width,bh/im.height);g.drawImage(im,(bw-im.width*sc)/2,(bh-im.height*sc)/2,im.width*sc,im.height*sc)}else{g.fillStyle='#456';g.fillRect(0,0,bw,bh)}
+      return{o,x:c.minx*PX,y:c.miny*PX,bw,bh,cx:(c.sx/c.px.length)*PX,cy:(c.sy/c.px.length)*PX}});
+    // dark seams where neighbouring pieces meet
+    const seam=document.createElement('canvas');seam.width=cw;seam.height=ch;const sg=seam.getContext('2d');sg.fillStyle='rgba(8,8,18,.95)';
+    for(let y=0;y<GH-1;y++)for(let x=0;x<GW-1;x++){const i=y*GW+x;if(!mask[i])continue;if((label[i]!==label[i+1]&&mask[i+1])||(label[i]!==label[i+GW]&&mask[i+GW]))sg.fillRect(x*PX,y*PX,PX*1.6,PX*1.6)}
+    let hover=-1,t0=performance.now(),dirty=true;
+    const draw=(now)=>{const t=(now-t0)/1000;let busy=false;ctx.clearRect(0,0,cw,ch);
+      order.forEach((k,idx)=>{const a=clamp((t-.2-idx*.045)/.7,0,1);if(a<1)busy=true;if(a<=0||k===hover)return;const c=off[k];ctx.globalAlpha=a*(hover>=0?.72:1);ctx.drawImage(c.o,c.x,c.y)});
+      ctx.globalAlpha=1;ctx.drawImage(seam,0,0);
+      {const ex=(19.2-x0)*S*PX,ey=(18.2-y0)*S*PX,er=1.05*S*PX;ctx.fillStyle='#07080f';ctx.beginPath();ctx.arc(ex+er*.5,ey+er*.5,er,0,7);ctx.fill();ctx.strokeStyle='rgba(242,217,166,.55)';ctx.lineWidth=PX*1.2;ctx.stroke()}
+      if(hover>=0){const c=off[hover];ctx.save();ctx.shadowColor='rgba(242,217,166,.9)';ctx.shadowBlur=PX*9;const s=1.07;ctx.translate(c.cx,c.cy);ctx.scale(s,s);ctx.translate(-c.cx,-c.cy);ctx.drawImage(c.o,c.x,c.y);ctx.restore()}
+      if(busy||dirty){dirty=false;requestAnimationFrame(draw)}else running=false};
+    let running=true;requestAnimationFrame(draw);
+    const kick=()=>{dirty=true;if(!running){running=true;requestAnimationFrame(draw)}};
+    // pan & zoom the canvas box
+    const pz=panzoom(st,zoomer,{min:1,max:5,fit:()=>({k:1,x:0,y:0})});
+    st.addEventListener('pointermove',e=>{const cr=canvas.getBoundingClientRect();const x=Math.floor((e.clientX-cr.left)/cr.width*GW),y=Math.floor((e.clientY-cr.top)/cr.height*GH);
+      const h=(x>=0&&y>=0&&x<GW&&y<GH&&mask[y*GW+x])?label[y*GW+x]:-1;if(h!==hover){hover=h;kick();st.style.cursor=h>=0?'pointer':'crosshair'}});
+    st.addEventListener('click',e=>{if(pz.moved)return;if(hover>=0)openPhoto(NUMS[hover])});
+    st.querySelector('.tag').style.zIndex=30;
+  });
+  // keep the canvas at the crow's own proportions
+  canvas.style.aspectRatio='';st.style.setProperty('--ar',GW/GH);
+  const fitBox=()=>{const sw=st.clientWidth,sh=st.clientHeight,ar=GW/GH;let h=sh*.96,w=h*ar;if(w>sw*.96){w=sw*.96;h=w/ar}canvas.style.cssText=`position:absolute;left:${(sw-w)/2}px;top:${(sh-h)/2}px;width:${w}px;height:${h}px`};fitBox();
+}
+
+/* ---------- tabs ---------- */
+const TABS=[
+ {id:'cf',n:'1',label:'Constellation field',tag:'recommended',mount:mountCF,
+  blurb:'Every photo is a point in one large night sky: near ones sharp, far ones small and dim, dashed constellation lines linking neighbours. Drift with the mouse, zoom, click to fly in.',
+  try:'Move the mouse (parallax) · wheel to zoom · click a photo to fly in, click again to open · click the sky to fit everything again.',
+  pros:'Keeps the memorial’s first impression (night sky, stars). Everything at a glance, plenty of room to grow. Reuses Growing’s zoom/pan and the sky’s lines and camera glide.',cons:'Far photos are small until you zoom. Phones need a larger minimum size.',effort:'Medium'},
+ {id:'sph',n:'2',label:'Memory sphere',mount:mountSphere,
+  blurb:'The photos sit on a slowly turning globe of stars. Drag to spin; the one you pick swings to the front.',
+  try:'Drag to spin (it keeps its momentum) · click a photo to bring it forward · click again to open.',
+  pros:'The most dramatic overview; one object holds every photo. Great for a first-visit “wow”.',cons:'Photos on the far side are hidden; real 3D tuning for phones; hardest to browse in order.',effort:'Large'},
+ {id:'grid',n:'3',label:'Overview grid',mount:mountGrid,
+  blurb:'Every photo tiled as a window on his dark Hyprland desktop, like a workspace overview. Move with h j k l, open with Enter.',
+  try:'Press h j k l or the arrow keys · Enter opens · or just hover and click.',
+  pros:'Easiest to scan and to use by keyboard; a direct nod to his setup; the simplest to build and keep accessible.',cons:'The least atmospheric; at 50+ photos the grid needs scrolling or paging.',effort:'Small–medium'},
+ {id:'hall',n:'4',label:'Gallery corridor',mount:mountHall,
+  blurb:'A long hall with framed photos on both walls. Scroll to walk down it; far frames fade into the dark.',
+  try:'Wheel, ↑ ↓ or drag to walk · click a frame to open.',
+  pros:'Calm, tangible, very “gallery”. Pacing lets each photo breathe.',cons:'Only a few photos visible at once, so seeing everything means walking the whole hall.',effort:'Medium–large'},
+ {id:'tbl',n:'5',label:'Pile on the table',mount:mountTable,
+  blurb:'All the prints scattered across one big table. Pan and zoom, hover to lift, click to pick one up.',
+  try:'Drag to pan · wheel to zoom · hover a print · click to pick it up, click again to open.',
+  pros:'The warmest and most personal; feels like a box of photos shared on a table.',cons:'No order, so photos can be buried under others; the bright table clashes with the night-sky identity.',effort:'Medium'},
+ {id:'glass',n:'6',label:'Stained-glass crow',tag:'new',mount:mountGlass,
+  blurb:'The whole gallery is one picture of his crow, cut into glass-like pieces; each piece is a photo. Zoom and the photos become legible.',
+  try:'Hover a piece (it lifts and glows) · wheel to zoom, drag to pan · click opens the photo.',
+  pros:'His identity is the layout — nothing else shows the album as a single object. Adding photos re-cuts the crow finer; it stays whole.',cons:'Pieces crop their photos, so wide group shots lose edges in the overview. Readable but chunky at 50 photos.',effort:'Medium–large'},
+];
+const tabs=$('#tabs'),panels=$('#panels');const mounted={};
+TABS.forEach(t=>{
+  const b=mk(`<button data-t="${t.id}"><b>${t.n}</b>${t.label}${t.tag?` · ${t.tag}`:''}</button>`);tabs.appendChild(b);
+  const p=mk(`<section class="panel" id="p-${t.id}"><h2>${t.n} · ${t.label}${t.tag?`<span>${t.tag}</span>`:''}</h2><p>${t.blurb}</p><p class="try">▸ ${t.try}</p><div class="stage" id="s-${t.id}"></div><div class="cols"><div><b>Why</b>${t.pros}</div><div><b>Trade-offs</b>${t.cons} <br><b style="margin-top:6px">Effort</b>${t.effort}</div></div></section>`);panels.appendChild(p);
+  b.onclick=()=>show(t.id);
+});
+function show(id){TABS.forEach(t=>{$('#p-'+t.id).classList.toggle('on',t.id===id);$(`[data-t="${t.id}"]`).classList.toggle('on',t.id===id)});
+  if(!mounted[id]){mounted[id]=1;const st=$('#s-'+id);TABS.find(t=>t.id===id).mount(st);
+    st.insertAdjacentHTML('beforeend','<button class="replay">↻ replay</button>');$('.replay',st).onclick=()=>{mounted[id]=0;show(id)}}
+  history.replaceState(null,'','#'+id)}
+show(TABS.some(t=>'#'+t.id===location.hash)?location.hash.slice(1):'cf');
+</script>
+</body>
+</html>
