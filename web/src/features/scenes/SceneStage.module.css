@@ -1,0 +1,53 @@
+.layer {
+  position: absolute;
+  inset: 0;
+}
+
+/* The new scene arrives from slightly closer; the one it covers dims. It does not shrink: that would show the next scene's page colour at its edges. */
+.entering {
+  animation: layer-in var(--duration-scene) var(--ease-out) both;
+}
+
+.leaving {
+  animation: layer-out var(--duration-scene) var(--ease-out) both;
+}
+
+/* A scene replaced mid-fade keeps its fade-in while it recedes. */
+.entering.leaving {
+  animation:
+    layer-in var(--duration-scene) var(--ease-out) both,
+    layer-out var(--duration-scene) var(--ease-out) both;
+}
+
+@keyframes layer-in {
+  from {
+    opacity: 0;
+    scale: 1.025;
+  }
+}
+
+@keyframes layer-out {
+  to {
+    filter: brightness(0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entering {
+    animation-name: fade-in;
+  }
+
+  .leaving {
+    animation: none;
+  }
+
+  .entering.leaving {
+    animation-name: fade-in;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+}

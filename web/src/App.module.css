@@ -6,7 +6,7 @@
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
-  transition: background var(--duration-base);
+  transition: background var(--duration-scene);
 }
 
 .stage {
@@ -42,16 +42,15 @@
   letter-spacing: 0.06em;
   text-align: center;
   backdrop-filter: blur(6px);
+  /* Arrives a moment after the header has. */
+  transition: opacity var(--duration-slow) var(--ease-out) 1.2s;
 }
 
-.loading {
-  composes: muted from "./styles/text.module.css";
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  margin: 0;
-  color: var(--color-text-muted);
+/* After the visitor's first move; and before the splash lifts, when nothing else is there yet. */
+.hintGone,
+.app[data-booted="false"] .hint {
+  opacity: 0;
+  transition-delay: 0s;
 }
 
 @media (max-width: 1100px) {

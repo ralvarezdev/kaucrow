@@ -1,0 +1,83 @@
+/* Always the night-sky palette: it is what the first scene is made of, and it shows before any scene theme exists. */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: #0b0d1c;
+  transition: opacity 0.7s ease;
+}
+
+.leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  animation:
+    light 0.5s ease-out forwards,
+    twinkle var(--d) ease-in-out infinite;
+  animation-delay: calc(var(--k) * 28ms), calc(var(--k) * 28ms + 0.6s);
+}
+
+@keyframes light {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+
+  to {
+    opacity: 0.9;
+    scale: 1;
+  }
+}
+
+@keyframes twinkle {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.crow {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  /* Sits just above the line of text below it. */
+  padding-bottom: 72px;
+}
+
+.text {
+  position: absolute;
+  top: calc(50% + 40px);
+  margin: 0;
+  color: #b9b7cc;
+  font:
+    13px / 1 "JetBrains Mono",
+    ui-monospace,
+    monospace;
+  letter-spacing: 0.06em;
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star {
+    animation: none;
+    opacity: 0.8;
+  }
+
+  .text {
+    animation: none;
+  }
+}

@@ -2,6 +2,20 @@ import type { ComponentType } from 'react'
 import { lazy } from 'react'
 import type { SceneId } from './ids'
 
+/** Dynamic imports, so every scene is its own chunk and can also be fetched ahead of its first visit. */
+const LOADERS: Record<SceneId, () => Promise<{ default: ComponentType }>> = {
+  'night-sky': () => import('./night-sky/NightSky').then((m) => ({ default: m.NightSky })),
+  gallery: () => import('./gallery/Gallery').then((m) => ({ default: m.Gallery })),
+  table: () => import('./table/Table').then((m) => ({ default: m.Table })),
+  growing: () => import('./growing/Growing').then((m) => ({ default: m.Growing })),
+  dotfiles: () => import('./dotfiles/Dotfiles').then((m) => ({ default: m.Dotfiles })),
+}
+
+/** Fetches every scene's code, so switching later never waits on the network. */
+export function preloadScenes(): void {
+  for (const load of Object.values(LOADERS)) void load()
+}
+
 export type SceneDefinition = {
   label: string
   /** Shows the prev/next controls beside the focus frame. */
@@ -22,7 +36,7 @@ export const SCENES: Record<SceneId, SceneDefinition> = {
     hasGroups: false,
     slotCount: 18,
     hint: 'Move the mouse to look around · Click a photo to bring it closer',
-    Component: lazy(() => import('./night-sky/NightSky').then((m) => ({ default: m.NightSky }))),
+    Component: lazy(LOADERS['night-sky']),
   },
   gallery: {
     label: 'Gallery',
@@ -30,7 +44,7 @@ export const SCENES: Record<SceneId, SceneDefinition> = {
     hasGroups: false,
     slotCount: 9,
     hint: 'Move the mouse to look around · Click a photo to bring it closer',
-    Component: lazy(() => import('./gallery/Gallery').then((m) => ({ default: m.Gallery }))),
+    Component: lazy(LOADERS.gallery),
   },
   table: {
     label: 'Table',
@@ -38,7 +52,7 @@ export const SCENES: Record<SceneId, SceneDefinition> = {
     hasGroups: false,
     slotCount: 13,
     hint: 'Move the mouse to look around · Click a photo to bring it closer',
-    Component: lazy(() => import('./table/Table').then((m) => ({ default: m.Table }))),
+    Component: lazy(LOADERS.table),
   },
   growing: {
     label: 'Growing',
@@ -46,7 +60,7 @@ export const SCENES: Record<SceneId, SceneDefinition> = {
     hasGroups: true,
     slotCount: 0,
     hint: 'Scroll to zoom in · Drag to look around',
-    Component: lazy(() => import('./growing/Growing').then((m) => ({ default: m.Growing }))),
+    Component: lazy(LOADERS.growing),
   },
   dotfiles: {
     label: "Kaucrow's dotfiles",
@@ -54,6 +68,6 @@ export const SCENES: Record<SceneId, SceneDefinition> = {
     hasGroups: false,
     slotCount: 4,
     hint: 'Click a window to focus it',
-    Component: lazy(() => import('./dotfiles/Dotfiles').then((m) => ({ default: m.Dotfiles }))),
+    Component: lazy(LOADERS.dotfiles),
   },
 }
