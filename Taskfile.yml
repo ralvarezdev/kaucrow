@@ -9,6 +9,11 @@ tasks:
     cmds:
       - task --list
 
+  dev:
+    desc: Start the Vite dev server (alias of frontend:dev)
+    cmds:
+      - task: frontend:dev
+
   frontend:install:
     desc: Install web dependencies
     dir: web
