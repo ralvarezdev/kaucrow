@@ -26,8 +26,12 @@
 
   --control-height: 44px;
   --gutter: clamp(16px, 4.4vw, 56px);
+  /* One calm rhythm: quick for controls, slower for anything that arrives or leaves. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --duration-fast: 0.2s;
-  --duration-base: 0.35s;
+  --duration-base: 0.45s;
+  --duration-scene: 0.5s;
+  --duration-slow: 0.8s;
 
   --crow-cream: #fff1e8;
   --crow-ink: #000;
