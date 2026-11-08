@@ -10,6 +10,7 @@ import {
   useAlbum,
   useRotation,
 } from '@/features/album'
+import { RadioWidget } from '@/features/radio/RadioWidget'
 import { SCENES } from '@/features/scenes/registry'
 import styles from './App.module.css'
 
@@ -36,6 +37,8 @@ export function App() {
 
       {/* After the overlay so the crab walks in front of the crow and the chips. */}
       <Patrol />
+
+      <RadioWidget />
 
       <Lightbox />
       {scene.slotCount > 0 && <PhotoList count={scene.slotCount} />}

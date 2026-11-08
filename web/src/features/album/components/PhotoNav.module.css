@@ -13,7 +13,8 @@
   left: calc(50% + 212px);
 }
 
-/* On narrow screens the frame shrinks with the camera; dock the buttons instead. */
+/* On narrow screens the frame shrinks with the camera; dock the buttons instead.
+   The 112px gap between them is where the radio button sits. */
 @media (max-width: 900px) {
   .prev,
   .next {
@@ -23,11 +24,11 @@
   }
 
   .prev {
-    left: calc(50% - 52px);
+    left: calc(50% - 100px);
   }
 
   .next {
-    left: calc(50% + 8px);
+    left: calc(50% + 56px);
   }
 }
 

@@ -1,0 +1,76 @@
+/* Bottom-centre: the switcher sits bottom-left and the hint bottom-right. The panel opens above the button. */
+.radio {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  --radio-w: 520px;
+  --radio-h: 440px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  pointer-events: auto;
+}
+
+.panel {
+  --scale: 0.6154;
+  overflow: hidden;
+  width: calc(var(--radio-w) * var(--scale));
+  height: calc(var(--radio-h) * var(--scale));
+  border-radius: var(--radius-md);
+  /* The radio page is cream; this keeps its edge visible on dark scenes. */
+  background: var(--crow-cream);
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.35);
+}
+
+/*
+ * The radio page is authored at about 500px wide (a fixed 500x300 canvas) and centres
+ * itself in the viewport. Squeezed into a 320px iframe it overflowed and grew scrollbars,
+ * and we cannot style a cross-origin page from here. So the frame keeps the page's own
+ * size, where it fits, centred and without scrolling, and is scaled down as a whole.
+ */
+.frame {
+  display: block;
+  width: var(--radio-w);
+  height: var(--radio-h);
+  border: 0;
+  transform: scale(var(--scale));
+  transform-origin: top left;
+}
+
+/* Hint and switcher stack here, so lift the button above the hint line. */
+@media (max-width: 1100px) {
+  .radio {
+    bottom: calc(var(--space-5) + var(--control-height) + var(--space-3) + 44px);
+  }
+}
+
+/* From here the photo arrows dock above the hint line: the radio button sits between them. */
+@media (max-width: 900px) {
+  .radio {
+    bottom: calc(var(--space-5) + var(--control-height) + var(--space-3) + 56px);
+  }
+
+  .toggle {
+    padding: 0 var(--space-4);
+  }
+}
+
+/* Sideways phones: no hint line, the arrows sit right above the switcher. */
+@media (max-height: 520px) {
+  .radio {
+    bottom: calc(var(--space-3) + var(--control-height) + var(--space-3));
+  }
+
+  .panel {
+    --scale: 0.423;
+  }
+}
+
+@media (max-width: 340px) {
+  .panel {
+    --scale: 0.5;
+  }
+}
