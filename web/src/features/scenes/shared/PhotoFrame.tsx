@@ -2,10 +2,12 @@ import { useCursor } from '@react-three/drei'
 import { type ThreeEvent, useFrame } from '@react-three/fiber'
 import type { ReactNode } from 'react'
 import { useMemo, useRef, useState } from 'react'
-import { Color, type MeshBasicMaterial } from 'three'
+import { Color, type Group, type MeshBasicMaterial } from 'three'
 import type { Photo } from '@/features/album/types'
 import { BlurredCard } from './BlurredCard'
+import { ENTRANCES, type EntranceKind, entranceDelay, entranceFrame, REST } from './entrance'
 import { FaceStack } from './FaceStack'
+import { useMotion } from './MotionContext'
 import { RoundedPlane } from './RoundedPlane'
 import { type Area, type PxRect, rad, rectCentre, toWorld } from './units'
 import { useDamped } from './useDamped'
@@ -42,6 +44,11 @@ export type PhotoFrameProps = {
 
 const LAYER = 0.004
 
+/** How far a hovered photo rises (px), how much it grows, and how far it comes toward the viewer. */
+const LIFT = { rise: 8, grow: 0.035, toward: 0.15 }
+/** Idle drift: amplitude in px and radians, and the speed of each wave. */
+const FLOAT = { rise: 3, tilt: 0.006, speed: 0.5 }
+
 export function PhotoFrame({
   photo,
   rect,
@@ -60,6 +67,7 @@ export function PhotoFrame({
   children,
 }: PhotoFrameProps) {
   const [hovered, setHovered] = useState(false)
+  const motion = useMotion()
 
   // The mat follows the photo's colour, easing to a new one instead of snapping ahead of the photo.
   const paperMaterial = useRef<MeshBasicMaterial>(null)
@@ -67,17 +75,29 @@ export function PhotoFrame({
   const paperTarget = useMemo(() => new Color(paper), [paper])
   useFrame((_, dt) => paperMaterial.current?.color.lerp(paperTarget, 1 - Math.exp(-9 * dt)))
   useCursor(hovered && onSelect !== undefined)
-  // Filters and layer changes fade instead of snapping.
-  const shown = useDamped(opacity)
+  const [cx, cy] = rectCentre(rect, area)
+  const w = toWorld(rect.width)
+  const h = toWorld(rect.height)
+
+  const arrived = useEntrance(motion.entrance, cx, cy, motion.held)
+  // Hovering lifts the photo toward the viewer; filters and layer changes fade instead of snapping.
+  const lift = useDamped(motion.hover && hovered && onSelect !== undefined ? 1 : 0, 0, 8)
+  const shown = useDamped(opacity) * arrived.alpha
+
+  const float = useRef<Group>(null)
+  const phase = useRef(Math.random() * Math.PI * 2).current
+  useFrame(({ clock }) => {
+    const g = float.current
+    if (!g || !motion.idle) return
+    const t = clock.elapsedTime * FLOAT.speed + phase
+    g.position.y = Math.sin(t) * toWorld(FLOAT.rise)
+    g.rotation.z = Math.sin(t * 0.74 + 1) * FLOAT.tilt
+  })
 
   const select = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation()
     onSelect?.()
   }
-
-  const [cx, cy] = rectCentre(rect, area)
-  const w = toWorld(rect.width)
-  const h = toWorld(rect.height)
 
   const innerW = rect.width - border * 2
   const innerH = rect.height - border * 2
@@ -93,8 +113,13 @@ export function PhotoFrame({
 
   return (
     <group
-      position={[cx, cy, z]}
-      rotation={[0, 0, -rad(rotation)]}
+      position={[
+        cx + arrived.dx,
+        cy + arrived.dy + toWorld(LIFT.rise) * lift,
+        z + arrived.dz + LIFT.toward * lift,
+      ]}
+      rotation={[0, 0, -rad(rotation) + arrived.rot]}
+      scale={arrived.scale * (1 + LIFT.grow * lift)}
       {...(onSelect ? { onClick: select } : {})}
       onPointerOver={(e) => {
         e.stopPropagation()
@@ -102,60 +127,96 @@ export function PhotoFrame({
       }}
       onPointerOut={() => setHovered(false)}
     >
-      {shadow && (
-        <RoundedPlane
-          width={w}
-          height={h}
-          radius={toWorld(radius)}
-          position={[0, -toWorld(shadow.offsetY), -LAYER]}
-        >
-          <meshBasicMaterial color="#000" transparent opacity={shadow.opacity * shown} />
-        </RoundedPlane>
-      )}
+      <group ref={float}>
+        {shadow && (
+          <RoundedPlane
+            width={w}
+            height={h}
+            radius={toWorld(radius)}
+            position={[0, -toWorld(shadow.offsetY * (1 + 0.6 * lift)), -LAYER]}
+          >
+            <meshBasicMaterial
+              color="#000"
+              transparent
+              opacity={Math.min(1, shadow.opacity * (1 + 0.4 * lift)) * shown}
+            />
+          </RoundedPlane>
+        )}
 
-      {blur > 0 ? (
-        <BlurredCard
-          width={rect.width}
-          height={rect.height}
-          border={border}
-          borderColor={borderColor}
-          paper={paper}
-          radius={radius}
-          blur={blur}
-          opacity={shown}
-        />
-      ) : (
-        <>
-          {border > 0 && (
-            <RoundedPlane width={w} height={h} radius={toWorld(radius)}>
+        {blur > 0 ? (
+          <BlurredCard
+            width={rect.width}
+            height={rect.height}
+            border={border}
+            borderColor={borderColor}
+            paper={paper}
+            radius={radius}
+            blur={blur}
+            opacity={shown}
+          />
+        ) : (
+          <>
+            {border > 0 && (
+              <RoundedPlane width={w} height={h} radius={toWorld(radius)}>
+                <meshBasicMaterial
+                  color={borderColor}
+                  transparent
+                  opacity={shown}
+                  toneMapped={false}
+                />
+              </RoundedPlane>
+            )}
+            <RoundedPlane
+              width={toWorld(innerW)}
+              height={toWorld(innerH)}
+              radius={toWorld(Math.max(0, radius - border))}
+              position={[0, 0, LAYER]}
+            >
               <meshBasicMaterial
-                color={borderColor}
+                ref={paperMaterial}
+                color={paperStart}
                 transparent
                 opacity={shown}
                 toneMapped={false}
               />
             </RoundedPlane>
-          )}
-          <RoundedPlane
-            width={toWorld(innerW)}
-            height={toWorld(innerH)}
-            radius={toWorld(Math.max(0, radius - border))}
-            position={[0, 0, LAYER]}
-          >
-            <meshBasicMaterial
-              ref={paperMaterial}
-              color={paperStart}
-              transparent
-              opacity={shown}
-              toneMapped={false}
-            />
-          </RoundedPlane>
-          <group position={[photoX, photoY, LAYER * 2]}>
-            <FaceStack photo={photo} w={photoW} h={photoH} radius={faceRadius} opacity={shown} />
-          </group>
-        </>
-      )}
-      {children}
+            <group position={[photoX, photoY, LAYER * 2]}>
+              <FaceStack photo={photo} w={photoW} h={photoH} radius={faceRadius} opacity={shown} />
+            </group>
+          </>
+        )}
+        {children}
+      </group>
     </group>
   )
+}
+
+/**
+ * Pose of a frame while it arrives with its scene. The photo nearest the centre
+ * moves first and the others follow outward. Holds at the start pose while the
+ * splash still covers the page, and re-renders only while moving.
+ */
+function useEntrance(
+  kind: EntranceKind,
+  x: number,
+  y: number,
+  held: boolean,
+): ReturnType<typeof entranceFrame> {
+  const [pose, setPose] = useState(() => entranceFrame(kind, 0, { x, y }))
+  const born = useRef<number | null>(null)
+  const done = useRef(false)
+
+  useFrame(({ clock }) => {
+    if (done.current || held) return
+    const now = clock.elapsedTime * 1000
+    born.current ??= now
+    const { duration } = ENTRANCES[kind]
+    const t = (now - born.current - entranceDelay(kind, x, y)) / duration
+    if (t >= 1) {
+      done.current = true
+      setPose(REST)
+    } else setPose(entranceFrame(kind, t, { x, y }))
+  })
+
+  return pose
 }

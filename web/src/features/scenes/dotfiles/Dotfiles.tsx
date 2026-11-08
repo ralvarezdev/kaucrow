@@ -52,7 +52,7 @@ function Windows() {
 
 export function Dotfiles() {
   return (
-    <SceneCanvas background={DOTFILES_COLORS.background} cameraZ={CAMERA_Z}>
+    <SceneCanvas background={DOTFILES_COLORS.background} cameraZ={CAMERA_Z} entrance="pop">
       <Windows />
     </SceneCanvas>
   )

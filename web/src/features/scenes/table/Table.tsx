@@ -113,7 +113,12 @@ function Tabletop() {
 
 export function Table() {
   return (
-    <SceneCanvas background={BACKGROUND} cameraZ={CAMERA_Z} focusWidth={FOCUS_WIDTH}>
+    <SceneCanvas
+      background={BACKGROUND}
+      cameraZ={CAMERA_Z}
+      focusWidth={FOCUS_WIDTH}
+      entrance="deal"
+    >
       <Tabletop />
     </SceneCanvas>
   )

@@ -1,6 +1,9 @@
 import { Canvas, useThree } from '@react-three/fiber'
 import type { ReactNode } from 'react'
-import { useEffect } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
+import type { EntranceKind } from './entrance'
+import { BootContext, MotionContext } from './MotionContext'
 import { fitDistance, fovFor } from './units'
 
 export type SceneCanvasProps = {
@@ -9,6 +12,10 @@ export type SceneCanvasProps = {
   cameraZ: number
   /** Stage px that must stay visible across the width on narrow screens; see fitDistance. */
   focusWidth?: number
+  /** How this scene's photos arrive when it appears. */
+  entrance: EntranceKind
+  /** Photos float a little in place. For scenes whose photos hang in the air. */
+  idle?: boolean
   children: ReactNode
 }
 
@@ -27,7 +34,27 @@ function FitCamera({ cameraZ, focusWidth }: { cameraZ: number; focusWidth?: numb
   return null
 }
 
-export function SceneCanvas({ background, cameraZ, focusWidth, children }: SceneCanvasProps) {
+export function SceneCanvas({
+  background,
+  cameraZ,
+  focusWidth,
+  entrance,
+  idle = false,
+  children,
+}: SceneCanvasProps) {
+  const reduced = usePrefersReducedMotion()
+  const booted = useContext(BootContext)
+  // The canvas has its own React root, so the context is rebuilt inside it.
+  const motion = useMemo(
+    () => ({
+      entrance: reduced ? ('fade' as const) : entrance,
+      idle: idle && !reduced,
+      hover: !reduced,
+      journey: !reduced,
+      held: !booted,
+    }),
+    [reduced, entrance, idle, booted],
+  )
   return (
     <Canvas
       dpr={[1, 2]}
@@ -36,7 +63,7 @@ export function SceneCanvas({ background, cameraZ, focusWidth, children }: Scene
     >
       <color attach="background" args={[background]} />
       <FitCamera cameraZ={cameraZ} focusWidth={focusWidth} />
-      {children}
+      <MotionContext.Provider value={motion}>{children}</MotionContext.Provider>
     </Canvas>
   )
 }

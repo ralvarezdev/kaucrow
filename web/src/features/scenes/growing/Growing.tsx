@@ -172,7 +172,7 @@ function Crowd() {
 
 export function Growing() {
   return (
-    <SceneCanvas background={BACKGROUND} cameraZ={CAMERA_Z}>
+    <SceneCanvas background={BACKGROUND} cameraZ={CAMERA_Z} entrance="grow">
       <Crowd />
     </SceneCanvas>
   )

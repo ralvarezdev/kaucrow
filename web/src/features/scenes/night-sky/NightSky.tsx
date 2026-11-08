@@ -1,6 +1,9 @@
 import { Line, Stars } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
+import { useEffect, useRef, useState } from 'react'
 import { MathUtils } from 'three'
+import { useAlbum } from '@/features/album/store'
+import { useMotion } from '../shared/MotionContext'
 import { PhotoFrame } from '../shared/PhotoFrame'
 import { SceneCanvas } from '../shared/SceneCanvas'
 import { radial, usePaintedTexture } from '../shared/textures'
@@ -35,13 +38,8 @@ const LAYERS: Record<
 }
 const scaleAt = (z: number) => (CAMERA_Z - z) / CAMERA_Z
 
-function ParallaxRig() {
-  useFrame(({ camera, pointer }, dt) => {
-    camera.position.x = MathUtils.damp(camera.position.x, pointer.x * 0.3, 4, dt)
-    camera.position.y = MathUtils.damp(camera.position.y, pointer.y * 0.22, 4, dt)
-  })
-  return null
-}
+/** How much of the way to a picked photo the camera starts from, before it settles back. */
+const JOURNEY_REACH = 0.2
 
 function waypoint(point: Waypoint): [number, number, number] {
   const rect = point === 'focus' ? SKY_FOCUS : SKY_SLOTS[point]?.rect
@@ -50,13 +48,91 @@ function waypoint(point: Waypoint): [number, number, number] {
   return [x, y, 0]
 }
 
+/** True once per pick, with the slot the photo came from; null before the first one. */
+function usePickedSlot(): { slot: number; count: number } | null {
+  const focus = useAlbum((s) => s.focus)
+  const tour = useAlbum((s) => s.tour)
+  const last = useRef(focus)
+  const [picked, setPicked] = useState<{ slot: number; count: number } | null>(null)
+
+  useEffect(() => {
+    if (last.current === focus) return
+    last.current = focus
+    setPicked((p) => ({ slot: tour, count: (p?.count ?? 0) + 1 }))
+  }, [focus, tour])
+
+  return picked
+}
+
+/**
+ * Pointer parallax, plus a camera glide: when a photo is picked the camera
+ * starts toward where it hung and eases back to the focus frame.
+ */
+function ParallaxRig({ picked }: { picked: { slot: number; count: number } | null }) {
+  const { journey } = useMotion()
+  const sweep = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    if (!picked || !journey) return
+    const [x, y] = waypoint(picked.slot)
+    sweep.current = { x: x * JOURNEY_REACH, y: y * JOURNEY_REACH }
+  }, [picked, journey])
+
+  useFrame(({ camera, pointer }, dt) => {
+    sweep.current.x = MathUtils.damp(sweep.current.x, 0, 1.6, dt)
+    sweep.current.y = MathUtils.damp(sweep.current.y, 0, 1.6, dt)
+    camera.position.x = MathUtils.damp(camera.position.x, pointer.x * 0.3 + sweep.current.x, 4, dt)
+    camera.position.y = MathUtils.damp(camera.position.y, pointer.y * 0.22 + sweep.current.y, 4, dt)
+  })
+  return null
+}
+
+/** Seconds the trail takes to draw, to hold, and to fade. */
+const TRAIL = { draw: 0.7, hold: 0.5, fade: 0.9 }
+
+/** A dashed line that draws itself from the slot a photo left to the focus frame, then fades. */
+function Trail({ picked }: { picked: { slot: number; count: number } | null }) {
+  const { journey } = useMotion()
+  const [age, setAge] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (picked && journey) setAge(0)
+  }, [picked, journey])
+
+  useFrame((_, dt) => {
+    if (age === null) return
+    const next = age + dt
+    setAge(next > TRAIL.draw + TRAIL.hold + TRAIL.fade ? null : next)
+  })
+
+  if (age === null || !picked) return null
+  const from = waypoint(picked.slot)
+  const to = waypoint('focus')
+  const p = 1 - (1 - Math.min(1, age / TRAIL.draw)) ** 3
+  const faded = Math.max(0, age - TRAIL.draw - TRAIL.hold) / TRAIL.fade
+  return (
+    <Line
+      points={[from, [from[0] + (to[0] - from[0]) * p, from[1] + (to[1] - from[1]) * p, 0]]}
+      color={ACCENT}
+      transparent
+      opacity={0.6 * (1 - faded)}
+      lineWidth={1.5}
+      dashed
+      dashSize={0.04}
+      gapSize={0.07}
+    />
+  )
+}
+
 function SkyContent() {
   const { photos, slots, focused, pick, expand } = useSceneAlbum()
   const glow = usePaintedTexture(GLOW)
+  const picked = usePickedSlot()
 
   return (
     <>
-      <ParallaxRig />
+      <ParallaxRig picked={picked} />
+      <Trail picked={picked} />
       <Stars radius={120} depth={60} count={1800} factor={5} saturation={0} fade speed={0.4} />
 
       {(['far', 'mid'] as const).map((depth) => {
@@ -126,7 +202,13 @@ function SkyContent() {
 
 export function NightSky() {
   return (
-    <SceneCanvas background={BACKGROUND} cameraZ={CAMERA_Z} focusWidth={FOCUS_WIDTH}>
+    <SceneCanvas
+      background={BACKGROUND}
+      cameraZ={CAMERA_Z}
+      focusWidth={FOCUS_WIDTH}
+      entrance="drift"
+      idle
+    >
       <SkyContent />
     </SceneCanvas>
   )
