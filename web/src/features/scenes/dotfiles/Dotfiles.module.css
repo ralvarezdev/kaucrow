@@ -1,0 +1,16 @@
+/* Sits in the empty strip under the windows, above the hint; the crab walks below it. */
+.laptop {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 68px;
+  /* Shrinks with short windows, so it never climbs into the photos. */
+  height: min(94px, 11vh);
+  width: auto;
+  pointer-events: none;
+}
+
+@media (max-height: 520px) {
+  .laptop {
+    display: none;
+  }
+}

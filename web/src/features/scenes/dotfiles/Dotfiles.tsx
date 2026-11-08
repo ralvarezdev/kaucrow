@@ -1,7 +1,9 @@
+import { Laptop } from '@/components/Laptop'
 import { PhotoFrame } from '../shared/PhotoFrame'
 import { SceneCanvas } from '../shared/SceneCanvas'
 import { STAGE } from '../shared/units'
 import { useSceneAlbum } from '../shared/useSceneAlbum'
+import styles from './Dotfiles.module.css'
 import { DOTFILES_COLORS, DOTFILES_FOCUS, DOTFILES_SLOTS } from './layout'
 
 /** His Hyprland setup rounds windows by 10px (decoration.rounding). */
@@ -52,8 +54,11 @@ function Windows() {
 
 export function Dotfiles() {
   return (
-    <SceneCanvas background={DOTFILES_COLORS.background} cameraZ={CAMERA_Z} entrance="pop">
-      <Windows />
-    </SceneCanvas>
+    <>
+      <SceneCanvas background={DOTFILES_COLORS.background} cameraZ={CAMERA_Z} entrance="pop">
+        <Windows />
+      </SceneCanvas>
+      <Laptop className={styles.laptop} />
+    </>
   )
 }

@@ -1,0 +1,47 @@
+.laptop {
+  display: block;
+  overflow: visible;
+}
+
+.edge {
+  fill: #4a4d52;
+}
+
+.plastic {
+  fill: #17181a;
+}
+
+.screen {
+  fill: #0b1013;
+}
+
+.bar {
+  fill: #1c2326;
+}
+
+/* The active-window blue of the dotfiles palette. */
+.accent {
+  fill: #92d0e3;
+}
+
+/* Arch's own blue. */
+.arch {
+  fill: #1793d1;
+}
+
+.wordmark {
+  fill: #8e9196;
+}
+
+/* ThinkPad red: the dot of the i and the TrackPoint. */
+.red {
+  fill: #e2231a;
+}
+
+.key {
+  fill: #2e3035;
+}
+
+.pad {
+  fill: #232529;
+}
