@@ -120,3 +120,7 @@ Spend tokens where they buy accuracy. Cut what persists (context, cache, always-
 - Don't quote a tool's savings percentage without measuring it here.
 
 Full guide: invoke the token-economy skill.
+
+## repo-tooling-architect v1.4.0
+
+- repo-tooling-architect: Repo-root developer tooling — .editorconfig, .gitignore, version pinning (mise default, proto alt), task runner (Task default, just alt), CI (GitHub Actions default, act for local/free runs), minimal pre-commit, env vars via dotenv + external secret manager, Renovate. Use when scaffolding or auditing a repo's tooling layer, or naming/renaming Taskfile tasks.

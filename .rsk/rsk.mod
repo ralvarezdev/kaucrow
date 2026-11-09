@@ -1,6 +1,6 @@
 version = 1
 tools = ["claude-code", "opencode"]
-pinned = ["commit-author", "docs-architect", "rsk-guide", "token-economy"]
+pinned = ["commit-author", "docs-architect", "rsk-guide", "token-economy", "repo-tooling-architect"]
 
 [skills]
   commit-author = "*"
