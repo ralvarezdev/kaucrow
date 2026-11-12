@@ -2,7 +2,7 @@
 
 # Pinned skills
 
-## commit-author v1.12.0
+## commit-author v1.12.1
 
 Write Conventional Commits messages from a staged diff. Activates only when the user explicitly asks to commit or write the message.
 
@@ -11,12 +11,13 @@ Write Conventional Commits messages from a staged diff. Activates only when the 
 - Types: feat (MINOR), fix (PATCH), refactor, perf, docs, style, test, build, ci, chore, revert.
 - Subject: imperative mood (`add`, not `added`), max 50 characters, lowercase start, no trailing period.
 - Body: explain why, not what; no line-by-line file summaries; hard wrap at 72 characters.
-- Merge commits: keep the type/scope form; body summarizes all changes the merge brings in, grouped by type or area; footers reference the merged branch or PR.
+- Merge commits: keep the type/scope form; when the merge brings meaningful changes, the body summarizes all of them, grouped by type or area, and footers reference the merged branch or PR.
 - Revert: body references the reverted SHA.
 - Footers: `BREAKING CHANGE:` followed by a migration path (forces a MAJOR bump); `Resolves #12`-style references at the bottom.
 
 ### Hard constraints
 - Never include `Co-Authored-By: Claude` or any AI-attribution footer.
+- A trailer the harness adds on its own is the tool's setting: never strip it by hand.
 - Never volunteer a commit: no proposing commits at task end, no pre-staging, no `git add`/`git commit` as cleanup.
 - Never run `git commit` without explicit go-ahead for the specific commit; each commit needs its own confirmation.
 - When asked to draft a message, ask whether the user will commit or wants you to.
@@ -26,7 +27,7 @@ Invoke the full skill when: the user wants a commit message or asks to commit, a
 
 Full guide: invoke the commit-author skill.
 
-## docs-architect v1.2.0
+## docs-architect v1.2.1
 
 Purpose: one `docs/` tree where the folder is the doc type, frontmatter is the state, and moving a file is a state change.
 
@@ -53,12 +54,13 @@ Purpose: one `docs/` tree where the folder is the doc type, frontmatter is the s
 - Never reuse an ADR number. Keep `adr/` flat; no per-project subfolder there.
 - Create a per-project subfolder inside a type only after ~10 files of that type.
 - Migrate: propose moves and renames, wait for approval, then move.
+- Stale work is pruned, not archived: a backlog item unmoved for 2–3 months is deleted or demoted, and drafts older than 2 months are promoted or deleted.
 - Never duplicate these conventions in `CLAUDE.md`/`AGENTS.md`; point them at `docs/`.
 
 Invoke the full skill when: setting up `docs/`, writing a plan/design/ADR/review, triaging a backlog, or reorganizing an existing docs folder.
 Full guide: invoke the docs-architect skill.
 
-## rsk-guide v0.5.1
+## rsk-guide v0.5.2
 
 Operator's summary of the `rsk` CLI: manage ralvaskills skills via the `.rsk/` manifest, bundles, global installs, and the `rsk mcp` server.
 
@@ -69,7 +71,7 @@ Operator's summary of the `rsk` CLI: manage ralvaskills skills via the `.rsk/` m
 - Quote the exact command, then wait for the user to confirm, redirect or decline.
 - Use `--dry-run` when available if the user wants to preview.
 - Confirm each bundle and each pin separately, even after a blanket "yes".
-- Pin only skills that truly need auto-loading; installed-but-unpinned skills are not auto-loaded.
+- Pin only skills that truly need auto-loading; installed-but-unpinned skills are not auto-loaded. Keep the pinned set small: the generated file has a 2000-token budget, and `rsk` warns once it passes.
 - Read-only commands (`rsk list`, `rsk catalog`, `rsk status` without `--stack`) need no confirmation.
 - Verify flags against `rsk --help`; the CLI is still in progress (draft).
 
@@ -89,7 +91,7 @@ Invoke the full rsk-guide skill for: setting up a project manifest or bundle, ch
 
 Full guide: invoke the rsk-guide skill.
 
-## token-economy v1.1.0
+## token-economy v1.1.1
 
 Spend tokens where they buy accuracy. Cut what persists (context, cache, always-loaded instructions) before what is said.
 
@@ -111,6 +113,7 @@ Spend tokens where they buy accuracy. Cut what persists (context, cache, always-
 - Poll inside the 5-minute cache TTL or far beyond it, or let a script wait and report once.
 - After a long break, `/clear` rather than resume a large context.
 - Install only the skills and MCP servers a project uses.
+- Configuration beats instructions: prefer a setting, then a hook, then a sentence.
 
 ### Hard constraints
 - Never fork a deep context; brief a fresh subagent instead.
@@ -121,11 +124,39 @@ Spend tokens where they buy accuracy. Cut what persists (context, cache, always-
 
 Full guide: invoke the token-economy skill.
 
-## repo-tooling-architect v1.4.0
+## repo-tooling-architect v1.6.1
 
-- repo-tooling-architect: Repo-root developer tooling — .editorconfig, .gitignore, version pinning (mise default, proto alt), task runner (Task default, just alt), CI (GitHub Actions default, act for local/free runs), minimal pre-commit, env vars via dotenv + external secret manager, Renovate. Use when scaffolding or auditing a repo's tooling layer, or naming/renaming Taskfile tasks.
+Language-agnostic repo-root tooling: `.editorconfig`, `.gitignore`, version pins, task runner, minimal pre-commit, env files, Renovate, and agent instruction files.
 
-## adhd-mode v1.0.0
+### Always-on rules
+- Add a tool only when all three hold: it pays back on day one, it costs less to install than to go without, and no language-native option covers it. When in doubt, skip.
+- Always include `.editorconfig` and `.gitignore`; trim `.gitignore` per language, starting from github/gitignore.
+- Local-only exclusions go in `.git/info/exclude` or `~/.gitignore_global`, not the repo `.gitignore`.
+- Pin tools in one committed file: `mise.toml` by default, `.prototools` as alternative. CI installs the same versions.
+- Skip a task runner for single-language projects; add one for multi-language, multi-service, or many multi-step commands.
+- Task (`Taskfile.yml`) is the default, just (`justfile`) the alternative; settle on one per repo.
+- Task names: `module[:submodule…]:verb[:target|mode]`. Verb right after the module; env and service are targets after the verb; unprefixed names only for repo-wide entry points. Full grammar is in `TASKFILE.md`. Stay flat until a module has 5+ tasks.
+- Pre-commit stays minimal: whitespace, EOF, large files, merge conflicts, YAML/JSON, gitleaks. Language linters run in the editor and in CI.
+- Non-secret config: committed `.env` plus git-ignored `.env.local`, loaded by Task `dotenv:`. Real secrets come from an external secret manager.
+- `.gitignore` must include `.env.local`; audit any `.env*` pattern. No `direnv` unless you need auto-activation on `cd`.
+- Renovate is the default: minor and patch grouped weekly; security updates immediate; major bumps labeled, never auto-merged. Dependabot is an acceptable alternative for tiny single-language repos.
+- CI defaults to GitHub Actions; `act` is an opt-in free local runner (e.g. when Actions billing blocks). Wire it as one `ci:local` task with a gitignored `.secrets`.
+- `AGENTS.md` is the single source; `CLAUDE.md` stays thin (`@AGENTS.md` plus Claude-only lines), and a nested `AGENTS.md` exists only when that package has its own commands or rules. Aim for under ~150 lines in `AGENTS.md`.
+
+### Hard constraints
+- Never copy a whole GitHub `.gitignore` default that covers languages you don't use.
+- Never put real secrets in `.env`; never commit them.
+- Never run language-specific linters or formatters in commit hooks.
+- Never duplicate content between `AGENTS.md` and `CLAUDE.md`. Generated blocks are never hand-edited.
+- Don't mix `Taskfile.yml` and `justfile` in one repo. Never mix task orderings in one namespace, or flattened and namespaced includes for one domain.
+- Major dependency bumps are never auto-merged.
+- Don't reimplement the pipeline as shell scripts; run the real workflow file with `act`.
+
+Invoke the full skill when: scaffolding or auditing a repo's tooling layer; choosing version pins, task runner, hooks, env files, or Renovate; writing `AGENTS.md` or `CLAUDE.md`; naming or renaming Taskfile tasks.
+
+Full guide: invoke the repo-tooling-architect skill.
+
+## adhd-mode v1.0.1
 
 Reply shape for a reader with ADHD: act first, small steps, visible state.
 
@@ -141,6 +172,8 @@ Reply shape for a reader with ADHD: act first, small steps, visible state.
 
 ### Hard constraints
 - Explain/walk-through requests run long; destructive actions get confirmed first; harness and `AGENTS.md` win over the rules.
+- Cut words, never a verification or a tool call.
+- Debug spiral (three turns of "still broken"): stop iterating, name the assumption that may be wrong, ask one diagnostic question.
 - With `caveman`: caveman sets words, this sets order. Commits, docs and code keep their own format.
 
 Invoke the full skill when: the user says "adhd mode" or invokes /adhd-mode, or you need the exceptions list and the pre-send check.
