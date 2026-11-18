@@ -2,3 +2,6 @@
 .env
 .wrangler/
 .claude/
+
+# CodeGraph index (local; rebuild with `codegraph init`)
+.codegraph/

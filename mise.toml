@@ -1,0 +1,6 @@
+# Mise tool pinning
+# https://mise.jdx.dev/
+
+[tools]
+# Task runner (go-task). Pinned so `task` resolves to go-task, not Taskwarrior.
+task = "3.54.0"
